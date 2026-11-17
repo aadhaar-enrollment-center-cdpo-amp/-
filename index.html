@@ -275,7 +275,7 @@
                             <option value="স্লট ০৩ • সকাল ১১:০০ - ১১:১৫">স্লট ০৩ • সকাল ১১:০০ - ১১:১৫</option>
                             <option value="স্লট ০৪ • সকাল ১১:১৫ - ১১:৩০">স্লট ০৪ • সকাল ১১:১৫ - ১১:৩০</option>
                             <option value="স্লট ০৫ • সকাল ১১:৩০ - ১১:৪৫">স্লট ০৫ • সকাল ১১:৩০ - ১১:৪৫</option>
-                            <option value="স্লট ০৬ • সকাল ১১:৪৫ - ১২:০০">স্লট ০৬ • সকাল ১১:৪৫ - ১২:০০</option>
+                            <option value="স্লট ০৬ • সকাল ১১:৪৫ - ১২:০০">স্লট ০৬ • সকাল ১১: ৪৫ - ১২:০০</option>
                             <option value="স্লট ০৭ • দুপুর ১২:০০ - ১২:১৫">স্লট ০৭ • দুপুর ১২:০০ - ১২:১৫</option>
                             <option value="স্লট ০৮ • দুপুর ১২:১৫ - ১২:৩০">স্লট ০৮ • দুপুর ১২:১৫ - ১২:৩০</option>
                             <option value="স্লট ০৯ • দুপুর ১২:৩০ - ১২:৪৫">স্লট ০৯ • দুপুর ১২:৩০ - ১২:৪৫</option>
@@ -437,20 +437,23 @@
             <!-- আনলকড অ্যাডমিন প্যানেল ট্যাবসমূহ -->
             <div id="admin-settings-box" class="hidden space-y-5">
                 <div class="flex flex-wrap gap-1 bg-slate-100 p-1.5 rounded-2xl">
-                    <button type="button" id="tab-btn-bookings" onclick="switchAdminTab('bookings')" class="flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold bg-white text-teal-800 shadow-sm transition cursor-pointer">
+                    <button type="button" id="tab-btn-bookings" onclick="switchAdminTab('bookings')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold bg-white text-teal-800 shadow-sm transition cursor-pointer">
                         <i class="fas fa-clipboard-list mr-1"></i> বুকিং তালিকা (<span id="booking-count-badge">0</span>)
                     </button>
-                    <button type="button" id="tab-btn-info" onclick="switchAdminTab('info')" class="flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
+                    <button type="button" id="tab-btn-info" onclick="switchAdminTab('info')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
                         <i class="fas fa-pen-to-square mr-1"></i> ইনফো ও নোটিশ
                     </button>
-                    <button type="button" id="tab-btn-docs" onclick="switchAdminTab('docs')" class="flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
-                        <i class="fas fa-file-shield mr-1"></i> চার্জ ও ডকুমেন্ট এডিটর
+                    <button type="button" id="tab-btn-docs" onclick="switchAdminTab('docs')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
+                        <i class="fas fa-file-shield mr-1"></i> চার্জ ও ডকুমেন্ট
                     </button>
-                    <button type="button" id="tab-btn-links" onclick="switchAdminTab('links')" class="flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
+                    <button type="button" id="tab-btn-holidays" onclick="switchAdminTab('holidays')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
+                        <i class="fas fa-calendar-xmark mr-1"></i> বিশেষ বন্ধের দিন
+                    </button>
+                    <button type="button" id="tab-btn-links" onclick="switchAdminTab('links')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
                         <i class="fas fa-link mr-1"></i> লিংক ম্যানেজার
                     </button>
-                    <button type="button" id="tab-btn-security" onclick="switchAdminTab('security')" class="flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
-                        <i class="fas fa-key mr-1"></i> সিকিউরিটি ও ব্যাকআপ
+                    <button type="button" id="tab-btn-security" onclick="switchAdminTab('security')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
+                        <i class="fas fa-key mr-1"></i> সিকিউরিটি
                     </button>
                 </div>
 
@@ -574,7 +577,30 @@
                     </div>
                 </div>
 
-                <!-- ৪. লিংক ম্যানেজার ট্যাব -->
+                <!-- ৪. বিশেষ বন্ধের দিন (Custom Holidays) ট্যাব -->
+                <div id="admin-tab-holidays" class="hidden space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
+                        <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                            <i class="fas fa-calendar-xmark text-rose-600"></i> নিজে থেকে বিশেষ ছুটির দিন বা বন্ধের তারিখ যোগ করুন
+                        </h4>
+                        <p class="text-[11px] text-slate-600">যে তারিখটি সিলেক্ট করবেন, সেদিন পোর্টালে কোনো বুকিং করা যাবে না এবং অফিস বন্ধ দেখাবে।</p>
+                        
+                        <div class="flex gap-2">
+                            <input type="date" id="new-custom-holiday-date" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white outline-none">
+                            <input type="text" id="new-custom-holiday-reason" placeholder="কারণ বা উপলক্ষ (যেমন: বিশেষ মিটিং)" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white outline-none">
+                            <button type="button" onclick="addCustomHoliday()" class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs cursor-pointer shrink-0">
+                                বন্ধ ঘোষণা করুন
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-xs text-slate-800">বর্তমানে নির্ধারিত বিশেষ বন্ধের দিনসমূহ:</h5>
+                        <div id="admin-custom-holidays-list" class="space-y-2 max-h-56 overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <!-- ৫. লিংক ম্যানেজার ট্যাব -->
                 <div id="admin-tab-links" class="hidden space-y-5">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide">নতুন লিংক যোগ করুন</h4>
@@ -599,7 +625,7 @@
                     <div id="admin-custom-options-manager-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
                 </div>
 
-                <!-- ৫. সিকিউরিটি ও ব্যাকআপ ট্যাব -->
+                <!-- ৬. সিকিউরিটি ও ব্যাকআপ ট্যাব -->
                 <div id="admin-tab-security" class="hidden space-y-4">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide">সিকিউরিটি প্রশ্ন ও পিন কোড আপডেট</h4>
@@ -663,8 +689,8 @@
             measurementId: "G-731GGW6DJ4"
         };
 
-        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_config_v4';
-        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v4';
+        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v5';
+        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v5';
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'cdpo-amarpur-portal';
 
         let db = null;
@@ -700,7 +726,6 @@
             return `${year}-${month}-${day}`;
         }
 
-        // ১৬ দিনের বেশি পুরোনো বুকিং রেকর্ড অটোমেটিক ফিল্টার করে বাদ দেওয়ার ফাংশন
         function cleanOldBookings(records) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -710,7 +735,6 @@
                 const bookingDate = new Date(item.date + 'T00:00:00');
                 const diffTime = today.getTime() - bookingDate.getTime();
                 const diffDays = diffTime / (1000 * 3600 * 24);
-                // ১৬ দিন বা তার চেয়ে পুরোনো তারিখের বুকিংগুলো ফিল্টার আউট করা হলো
                 return diffDays <= 16;
             });
         }
@@ -814,6 +838,7 @@
                 { title: "আধার ডকুমেন্ট তালিকা ২০২৬ (PDF)", url: "https://uidai.gov.in/images/commdoc/List_of_Supporting_Document_for_Aadhaar_Enrolment_and_Update.pdf", icon: "fas fa-file-pdf" }
             ],
             customSections: [],
+            customHolidays: [],
             uidaiDocsData: JSON.parse(JSON.stringify(defaultUidaiDocsData))
         };
 
@@ -831,6 +856,7 @@
                 const c = localStorage.getItem(LOCAL_CFG_KEY);
                 if (c) portalConfig = { ...defaultPortalConfig, ...JSON.parse(c) };
                 if (!portalConfig.uidaiDocsData) portalConfig.uidaiDocsData = JSON.parse(JSON.stringify(defaultUidaiDocsData));
+                if (!portalConfig.customHolidays) portalConfig.customHolidays = [];
                 const b = localStorage.getItem(LOCAL_BOOKINGS_KEY);
                 if (b) {
                     const parsedBookings = JSON.parse(b);
@@ -902,6 +928,7 @@
                             ...cloudData,
                             pin: cloudData.pin ? String(cloudData.pin) : "31121999",
                             securityAnswer: cloudData.securityAnswer ? String(cloudData.securityAnswer) : defaultPortalConfig.securityAnswer,
+                            customHolidays: Array.isArray(cloudData.customHolidays) ? cloudData.customHolidays : [],
                             uidaiDocsData: cloudData.uidaiDocsData ? { ...defaultUidaiDocsData, ...cloudData.uidaiDocsData } : JSON.parse(JSON.stringify(defaultUidaiDocsData))
                         };
                         saveLocalCache();
@@ -936,7 +963,6 @@
                     });
 
                     let allRecords = Array.from(mergedMap.values());
-                    // ১৬ দিনের বেশি পুরোনো রেকর্ড ক্লাউড থেকেও অটোমেটিক মুছে ফেলা বা ফিল্টার করা
                     allRecords = cleanOldBookings(allRecords);
 
                     allRecords.sort((a, b) => {
@@ -1223,8 +1249,11 @@
                 return true;
             }
 
-            const selected = new Date(dateInput.value + 'T00:00:00');
+            const val = dateInput.value;
+            const selected = new Date(val + 'T00:00:00');
             const day = selected.getDay();
+
+            // শনি ও রবিবার বন্ধ চেক
             if (day === 0 || day === 6) {
                 warn.textContent = "শনিবার ও রবিবার অফিস বন্ধ থাকে। অনুগ্রহ করে অন্য কার্যদিবস বেছে নিন।";
                 warn.classList.remove('hidden');
@@ -1232,13 +1261,25 @@
                 updateSlotAvailability();
                 return false;
             }
-            if (govtHolidays2026.includes(dateInput.value)) {
+            // সরকারি ছুটির দিন চেক
+            if (govtHolidays2026.includes(val)) {
                 warn.textContent = "নির্বাচিত তারিখটি সরকারি ছুটির দিন। অন্য তারিখ নির্বাচন করুন।";
                 warn.classList.remove('hidden');
                 dateInput.value = "";
                 updateSlotAvailability();
                 return false;
             }
+            // ইউজার কর্তৃক অ্যাডমিন প্যানেল থেকে সিলেক্ট করা বিশেষ বন্ধের দিন চেক
+            const customHolidays = portalConfig.customHolidays || [];
+            const matchedHoliday = customHolidays.find(h => h.date === val);
+            if (matchedHoliday) {
+                warn.textContent = `এই দিনটি বিশেষ কারণে বন্ধ ঘোষণা করা হয়েছে (${matchedHoliday.reason || 'অফিস বন্ধ'})। অন্য তারিখ নির্বাচন করুন।`;
+                warn.classList.remove('hidden');
+                dateInput.value = "";
+                updateSlotAvailability();
+                return false;
+            }
+
             warn.classList.add('hidden');
             updateSlotAvailability();
             return true;
@@ -1554,15 +1595,15 @@
         function switchAdminTab(tab) {
             if (!isAdminAuthenticated) return;
             
-            ['bookings', 'info', 'docs', 'links', 'security'].forEach(t => {
+            ['bookings', 'info', 'docs', 'holidays', 'links', 'security'].forEach(t => {
                 const isCurrent = t === tab;
                 const el = document.getElementById(`admin-tab-${t}`);
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (el) el.classList.toggle('hidden', !isCurrent);
                 if (btn) {
                     btn.className = isCurrent
-                        ? "flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold bg-white text-teal-800 shadow-sm transition cursor-pointer"
-                        : "flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer";
+                        ? "flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold bg-white text-teal-800 shadow-sm transition cursor-pointer"
+                        : "flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer";
                 }
             });
 
@@ -1579,6 +1620,9 @@
             }
             if (tab === 'docs') {
                 loadDocCategoryIntoAdminEditor();
+            }
+            if (tab === 'holidays') {
+                renderAdminCustomHolidaysManager();
             }
             if (tab === 'links') {
                 renderAdminLinksManager();
@@ -1628,6 +1672,64 @@
             renderPortal();
             selectDocCategory(catKey);
             showToast("✅ সেবার চার্জ ও ডকুমেন্ট তালিকা সফলভাবে ক্লাউডে সেভ হয়েছে!");
+        }
+
+        async function addCustomHoliday() {
+            if (!isAdminAuthenticated) return;
+            const dateVal = document.getElementById('new-custom-holiday-date').value;
+            const reasonVal = document.getElementById('new-custom-holiday-reason').value.trim() || "অফিস বন্ধ";
+
+            if (!dateVal) {
+                showToast("⚠️ অনুগ্রহ করে ছুটির তারিখটি সিলেক্ট করুন।");
+                return;
+            }
+
+            if (!portalConfig.customHolidays) portalConfig.customHolidays = [];
+            
+            if (portalConfig.customHolidays.some(h => h.date === dateVal)) {
+                showToast("⚠️ এই তারিখটি ইতিমধ্যেই ছুটির তালিকায় রয়েছে।");
+                return;
+            }
+
+            portalConfig.customHolidays.push({ date: dateVal, reason: reasonVal });
+            portalConfig.customHolidays.sort((a, b) => a.date.localeCompare(b.date));
+
+            await persistConfig();
+            renderAdminCustomHolidaysManager();
+            document.getElementById('new-custom-holiday-date').value = "";
+            document.getElementById('new-custom-holiday-reason').value = "";
+            showToast("✅ বিশেষ ছুটির দিন সফলভাবে ক্লাউডে যুক্ত হয়েছে!");
+        }
+
+        async function removeCustomHoliday(index) {
+            if (!isAdminAuthenticated) return;
+            if (portalConfig.customHolidays) {
+                portalConfig.customHolidays.splice(index, 1);
+                await persistConfig();
+                renderAdminCustomHolidaysManager();
+                showToast("ছুটির তালিকা থেকে তারিখটি মুছে ফেলা হয়েছে।");
+            }
+        }
+
+        function renderAdminCustomHolidaysManager() {
+            const listEl = document.getElementById('admin-custom-holidays-list');
+            if (!listEl) return;
+            const holidays = portalConfig.customHolidays || [];
+            if (holidays.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-500 bg-white p-3 rounded-xl border border-slate-200">কোনো বিশেষ ছুটির দিন যোগ করা হয়নি।</p>`;
+                return;
+            }
+            listEl.innerHTML = holidays.map((h, i) => `
+                <div class="flex items-center justify-between bg-white border border-slate-200 p-3 rounded-xl text-xs">
+                    <div>
+                        <span class="font-extrabold text-rose-700 block">📅 ${escapeHTML(h.date)}</span>
+                        <span class="text-slate-600">${escapeHTML(h.reason)}</span>
+                    </div>
+                    <button type="button" onclick="removeCustomHoliday(${i})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-1.5 rounded-lg font-semibold shrink-0 cursor-pointer">
+                        বাদ দিন
+                    </button>
+                </div>
+            `).join('');
         }
 
         function renderBookingList() {
@@ -2094,7 +2196,9 @@
             deleteCustomSection,
             saveSecuritySettings,
             toggleBookingStatus,
-            deleteBookingRecord
+            deleteBookingRecord,
+            addCustomHoliday,
+            removeCustomHoliday
         });
 
         loadLocalCache();
@@ -2117,3 +2221,4 @@
     </script>
 </body>
 </html>
+
