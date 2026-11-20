@@ -276,7 +276,7 @@
                             <span id="daily-remaining-badge" class="text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-lg border border-teal-200">প্রতিদিন সর্বোচ্চ ২০ জন</span>
                         </div>
                         <select id="book-slot" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white"></select>
-                        <p id="slot-availability-hint" class="text-[11px] text-slate-500 mt-1">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একদিনে একটি মোবাইল নম্বর ও একটি ১২ ডিজিটের আধার নম্বর দিয়ে সর্বোচ্চ ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।</p>
+                        <p id="slot-availability-hint" class="text-[11px] text-slate-500 mt-1">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একই আধার নম্বর ও একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।</p>
                     </div>
 
                     <!-- ফর্মের নিচে অতিরিক্ত তথ্য / নোটিশ বক্স -->
@@ -780,11 +780,11 @@
             measurementId: "G-731GGW6DJ4"
         };
 
-        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v20';
-        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v20';
+        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v21';
+        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v21';
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'cdpo-amarpur-portal';
 
-        const AADHAAR_12_LABEL = "আধার নম্বর (১২ ডিজিট • যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার নম্বর)";
+        const AADHAAR_12_LABEL = "আধার নম্বর (যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার কার্ডের আধার নাম্বার )";
 
         const standardFieldDefinitions = [
             {
@@ -807,7 +807,7 @@
                 key: 'idLast4',
                 inputId: 'book-id-last4',
                 label: AADHAAR_12_LABEL,
-                placeholder: '১২ সংখ্যার আধার নম্বর লিখুন',
+                placeholder: '১২ সংখ্যার আধার নম্বর লিখুন (সর্বোচ্চ ১২ ডিজিট)',
                 type: 'id12',
                 fullWidth: false
             },
@@ -1011,7 +1011,7 @@
             bookingIntroText: "বুকিং করার সাথে সাথেই আপনার তথ্য অটোমেটিক ক্লাউড স্টোরেজে সংরক্ষিত হবে এবং অফিসিয়াল পিডিএফ স্লিপ জেনারেট হবে।",
             bookingExtraInfo: "",
             bookingFooterInfo: "",
-            slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একদিনে একটি মোবাইল নম্বর ও একটি ১২ ডিজিটের আধার নম্বর দিয়ে সর্বোচ্চ ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।",
+            slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একই আধার নম্বর ও একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।",
             pin: "31121999",
             securityQuestion: "তোমার প্রিয় মানুষটার নাম কি?",
             securityAnswer: "Sangita",
@@ -1094,11 +1094,11 @@
                         : (isId12 ? 'pattern="[0-9]{12}" maxlength="12" minlength="12" inputmode="numeric" oninput="handleDigitLimitInput(this, 12)"' : '');
                     const inpType = (isPhone || isId12) ? 'tel' : 'text';
                     const helperTxt = isPhone
-                        ? '<span class="text-[10px] text-slate-500 block mt-1">• ঠিক ১০ সংখ্যার মোবাইল নম্বর (একদিনে সর্বোচ্চ ২টি বুকিং)</span>'
-                        : (isId12 ? '<span class="text-[10px] text-teal-700 font-semibold block mt-1">• ঠিক ১২ সংখ্যার আধার নম্বর দিন (একদিনে সর্বোচ্চ ২টি বুকিং)</span>' : '');
+                        ? '<span class="text-[10px] text-slate-500 block mt-1">• ১০ সংখ্যার মোবাইল নম্বর (একই মোবাইল নম্বর দিয়ে একাধিক বুকিং করা যাবে না)</span>'
+                        : (isId12 ? '<span class="text-[10px] text-teal-700 font-semibold block mt-1">• ১২ ডিজিটের বেশি বসবে না • একই আধার নম্বর দিয়ে একাধিক বুকিং করা যাবে না</span>' : '');
                     return `
                         <div class="${isLast ? 'sm:col-span-2' : ''}">
-                            <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(f.label)} *</label>
+                            <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(f.label)} <span class="text-rose-600 font-extrabold">*</span></label>
                             <input type="${inpType}" id="${f.inputId}" required ${attrs} placeholder="${escapeHTML(f.placeholder)}" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
                             ${helperTxt}
                         </div>
@@ -1109,7 +1109,7 @@
             fullWidth.forEach(f => {
                 html += `
                     <div>
-                        <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(f.label)} *</label>
+                        <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(f.label)} <span class="text-rose-600 font-extrabold">*</span></label>
                         <input type="text" id="${f.inputId}" required placeholder="${escapeHTML(f.placeholder)}" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
                     </div>
                 `;
@@ -1343,13 +1343,13 @@
 
         function loadLocalCache() {
             try {
-                const c = localStorage.getItem(LOCAL_CFG_KEY);
+                const c = localStorage.getItem(LOCAL_CFG_KEY) || localStorage.getItem('cdpo_amarpur_portal_v20');
                 if (c) portalConfig = { ...defaultPortalConfig, ...JSON.parse(c) };
                 if (!portalConfig.uidaiDocsData) portalConfig.uidaiDocsData = JSON.parse(JSON.stringify(defaultUidaiDocsData));
                 if (!portalConfig.customHolidays) portalConfig.customHolidays = [];
                 if (!Array.isArray(portalConfig.customBookingFields)) portalConfig.customBookingFields = [];
                 if (!Array.isArray(portalConfig.hiddenStandardFields)) portalConfig.hiddenStandardFields = [];
-                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v19') || localStorage.getItem('cdpo_amarpur_bookings_v18');
+                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v20') || localStorage.getItem('cdpo_amarpur_bookings_v19') || localStorage.getItem('cdpo_amarpur_bookings_v18');
                 if (b) {
                     const parsedBookings = JSON.parse(b);
                     bookingRecords = cleanOldBookings(parsedBookings);
@@ -1705,7 +1705,7 @@
             }
             const ruleNoteEl = document.getElementById('slot-availability-hint');
             if (ruleNoteEl) {
-                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একদিনে একটি মোবাইল নম্বর ও একটি ১২ ডিজিটের আধার নম্বর দিয়ে সর্বোচ্চ ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।`;
+                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একই আধার নম্বর ও একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।`;
             }
 
             rebuildSlotOptions();
@@ -1936,23 +1936,24 @@
                 return;
             }
 
-            if (phone) {
-                const dailyPhoneBookingCount = bookingRecords.filter(b => b.date === date && b.phone === phone).length;
-                if (dailyPhoneBookingCount >= 2) {
-                    showBookingErrorNotice("একটি মোবাইল নম্বর দিয়ে একদিনে শুধুমাত্র দুটি অ্যাপয়েন্টমেন্ট বুক করা যাবে।");
+            if (rawId12) {
+                const existingAadhaarBooking = bookingRecords.find(b => {
+                    const storedFullId = sanitizeDigitsOnly(b.idFull12 || "", 12);
+                    return storedFullId && storedFullId === rawId12;
+                });
+                if (existingAadhaarBooking) {
+                    showBookingErrorNotice("এই আধার নম্বর দিয়ে ইতিমধ্যেই একটি অ্যাপয়েন্টমেন্ট বুক করা আছে। একই আধার নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।");
                     return;
                 }
             }
 
-            if (rawId12) {
-                const dailyIdBookingCount = bookingRecords.filter(b => {
-                    if (b.date !== date) return false;
-                    const storedFullId = sanitizeDigitsOnly(b.idFull12 || "", 12);
-                    if (storedFullId) return storedFullId === rawId12;
-                    return false;
-                }).length;
-                if (dailyIdBookingCount >= 2) {
-                    showBookingErrorNotice("একটি ১২ ডিজিটের আধার নম্বর দিয়ে একদিনে শুধুমাত্র দুটি অ্যাপয়েন্টমেন্ট বুক করা যাবে।");
+            if (phone) {
+                const existingPhoneBooking = bookingRecords.find(b => {
+                    const storedPhone = sanitizeDigitsOnly(b.phone || "", 10);
+                    return storedPhone && storedPhone === phone;
+                });
+                if (existingPhoneBooking) {
+                    showBookingErrorNotice("এই মোবাইল নম্বর দিয়ে ইতিমধ্যেই একটি অ্যাপয়েন্টমেন্ট বুক করা আছে। একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।");
                     return;
                 }
             }
@@ -2914,3 +2915,4 @@
     </script>
 </body>
 </html>
+
