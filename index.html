@@ -227,9 +227,14 @@
                 <div class="border-b border-slate-100 pb-4 space-y-2.5">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                         <h2 class="text-xl sm:text-2xl font-bold text-slate-900">অ্যাপয়েন্টমেন্ট স্লট বুকিং ফর্ম</h2>
-                        <button type="button" onclick="openAdminModal('info')" class="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-xl border border-teal-200 cursor-pointer flex items-center gap-1.5">
-                            <i class="fas fa-pen-to-square"></i> বুকিং তথ্য এডিট করুন
-                        </button>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button type="button" onclick="openAdminModal('fields')" class="text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-xl border border-emerald-200 cursor-pointer flex items-center gap-1.5">
+                                <i class="fas fa-plus-circle"></i> নতুন তথ্য/ফিল্ড যোগ করুন
+                            </button>
+                            <button type="button" onclick="openAdminModal('info')" class="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-xl border border-teal-200 cursor-pointer flex items-center gap-1.5">
+                                <i class="fas fa-pen-to-square"></i> বুকিং তথ্য এডিট করুন
+                            </button>
+                        </div>
                     </div>
                     <p id="booking-intro-text" class="text-xs sm:text-sm text-slate-500">বুকিং করার সাথে সাথেই আপনার তথ্য অটোমেটিক ক্লাউড স্টোরেজে সংরক্ষিত হবে এবং অফিসিয়াল পিডিএফ স্লিপ জেনারেট হবে।</p>
                     <div id="booking-extra-info-box" class="hidden bg-teal-50/90 border border-teal-200 rounded-2xl p-4 text-xs sm:text-sm text-teal-950 whitespace-pre-line leading-relaxed"></div>
@@ -246,6 +251,25 @@
                             <input type="tel" id="book-phone" required pattern="[0-9]{10}" maxlength="10" placeholder="১০ সংখ্যার মোবাইল নম্বর" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
                         </div>
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">ঠিকানা (গ্রাম / ওয়ার্ড / এলাকা ও পিনকোড) *</label>
+                        <input type="text" id="book-address" required placeholder="যেমন: অমরপুর, গোমতী জেলা, ত্রিপুরা - ৭৯৯১০১" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">পিতা/স্বামী/মাতার নাম *</label>
+                            <input type="text" id="book-parent-guardian-name" required placeholder="যেমন: সুশীল দেববর্মা / মমতা দেববর্মা" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">শেষ ৪ ডিজিট *</label>
+                            <input type="text" id="book-id-last4" required pattern="[0-9]{4}" maxlength="4" inputmode="numeric" placeholder="যেমন: 1234" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <!-- পোর্টাল থেকে অ্যাড করা অতিরিক্ত কাস্টম তথ্য ফিল্ডসমূহ -->
+                    <div id="dynamic-booking-fields-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -316,7 +340,11 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <div><span class="text-slate-500">আবেদনকারীর নাম:</span> <strong id="slip-name" class="text-slate-900 block sm:inline"></strong></div>
+                    <div><span class="text-slate-500">পিতা/স্বামী/মাতার নাম:</span> <strong id="slip-parent-guardian-name" class="text-slate-900 block sm:inline"></strong></div>
+                    <div><span class="text-slate-500">শেষ ৪ ডিজিট:</span> <strong id="slip-id-last4" class="text-slate-900 block sm:inline"></strong></div>
                     <div><span class="text-slate-500">মোবাইল নম্বর:</span> <strong id="slip-phone" class="text-slate-900 block sm:inline"></strong></div>
+                    <div class="sm:col-span-2"><span class="text-slate-500">ঠিকানা:</span> <strong id="slip-address" class="text-slate-900 block sm:inline"></strong></div>
+                    <div id="slip-custom-fields-list" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200/80 hidden"></div>
                     <div><span class="text-slate-500">সেবার ধরন:</span> <strong id="slip-service" class="text-slate-900 block sm:inline"></strong></div>
                     <div><span class="text-slate-500">তারিখ ও সময়:</span> <strong id="slip-datetime" class="text-teal-800 block sm:inline"></strong></div>
                     <div class="sm:col-span-2 pt-2 border-t border-slate-200 flex items-center justify-between">
@@ -428,6 +456,9 @@
                     <button type="button" id="tab-btn-bookings" onclick="switchAdminTab('bookings')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold bg-white text-teal-800 shadow-sm transition cursor-pointer">
                         <i class="fas fa-clipboard-list mr-1"></i> বুকিং তালিকা (<span id="booking-count-badge">0</span>)
                     </button>
+                    <button type="button" id="tab-btn-fields" onclick="switchAdminTab('fields')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
+                        <i class="fas fa-plus-square mr-1"></i> ফর্ম ফিল্ডস (<span id="custom-fields-count-badge">0</span>)
+                    </button>
                     <button type="button" id="tab-btn-info" onclick="switchAdminTab('info')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
                         <i class="fas fa-pen-to-square mr-1"></i> ইনফো ও নোটিশ
                     </button>
@@ -446,7 +477,7 @@
                 </div>
 
                 <!-- ১. বুকিং তালিকা ট্যাব -->
-                <div id="admin-tab-bookings" class="space-y-4">
+                <div id="admin-tab-bookings" class="hidden space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                         <div class="flex flex-wrap items-center gap-2">
                             <input type="date" id="admin-filter-date" onchange="renderBookingList()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs bg-white outline-none">
@@ -463,7 +494,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="নাম, টোকেন, মোবাইল বা তারিখ (YYYY-MM-DD) দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs outline-none">
+                        <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="নাম, পিতা/স্বামী/মাতার নাম, শেষ ৪ ডিজিট, ঠিকানা, অতিরিক্ত তথ্য, টোকেন বা মোবাইল দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs outline-none">
                     </div>
 
                     <div id="date-wise-summary-bar" class="flex flex-wrap gap-1.5 text-[11px]"></div>
@@ -473,7 +504,7 @@
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 uppercase tracking-wider font-bold">
                                     <th class="p-3">টোকেন</th>
-                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">নাম, পিতা/স্বামী/মাতা, শেষ ৪ ডিজিট, ঠিকানা ও অতিরিক্ত তথ্য</th>
                                     <th class="p-3">মোবাইল</th>
                                     <th class="p-3">সেবা ও চার্জ</th>
                                     <th class="p-3">তারিখ ও স্লট</th>
@@ -486,7 +517,60 @@
                     </div>
                 </div>
 
-                <!-- ২. ইনফো ও নোটিশ এডিটর ট্যাব -->
+                <!-- ২. কাস্টম ফর্ম ফিল্ডস ম্যানেজার ট্যাব -->
+                <div id="admin-tab-fields" class="hidden space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
+                        <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                            <i class="fas fa-plus-circle text-emerald-700"></i> বুকিং ফর্মে নতুন তথ্য নেওয়ার ঘর যোগ করুন
+                        </h4>
+                        <p class="text-[11px] text-slate-600">যে তথ্যটি আবেদনকারীর কাছ থেকে নিতে চান তার নাম (Label) দিন। যেমন: <em>ইমেইল আইডি</em>, <em>বয়স</em>, <em>এনরোলমেন্ট / আপডেট নম্বর</em>, বা <em>বিশেষ মন্তব্য</em>।</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">নতুন ফিল্ডের নাম (Label) *</label>
+                                <input type="text" id="new-field-label" placeholder="যেমন: ইমেইল আইডি বা বয়স" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">ইনপুটের ধরন (Type)</label>
+                                <select id="new-field-type" onchange="toggleFieldOptionsInput()" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none font-semibold">
+                                    <option value="text">সাধারণ লেখা (Text)</option>
+                                    <option value="number">সংখ্যা (Number)</option>
+                                    <option value="tel">মোবাইল / ফোন নম্বর (Phone)</option>
+                                    <option value="email">ইমেইল (Email)</option>
+                                    <option value="date">তারিখ (Date)</option>
+                                    <option value="select">পছন্দের তালিকা / Dropdown (Select)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="new-field-options-wrap" class="hidden">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">অপশনগুলো কমা (,) দিয়ে আলাদা করে লিখুন *</label>
+                            <input type="text" id="new-field-options" placeholder="যেমন: পুরুষ, মহিলা, অন্যান্য" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">উদাহরণ / Placeholder (ঐচ্ছিক)</label>
+                                <input type="text" id="new-field-placeholder" placeholder="যেমন: তথ্য লিখুন..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none">
+                            </div>
+                            <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-800 pt-4 cursor-pointer">
+                                <input type="checkbox" id="new-field-required" checked class="w-4 h-4 accent-teal-700 rounded">
+                                <span>এই ঘরটি পূরণ করা বাধ্যতামূলক (Required *)</span>
+                            </label>
+                        </div>
+
+                        <button type="button" onclick="addCustomBookingField()" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-sm">
+                            <i class="fas fa-plus mr-1"></i> বুকিং ফর্মে এই ফিল্ড যুক্ত করুন
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-xs text-slate-800">বর্তমানে যুক্ত থাকা কাস্টম ফিল্ডসমূহ:</h5>
+                        <div id="admin-custom-fields-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <!-- ৩. ইনফো ও নোটিশ এডিটর ট্যাব -->
                 <div id="admin-tab-info" class="hidden space-y-4">
                     <div class="space-y-3">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -544,7 +628,7 @@
                     </div>
                 </div>
 
-                <!-- ৩. চার্জ ও ডকুমেন্ট এডিটর ট্যাব -->
+                <!-- ৪. চার্জ ও ডকুমেন্ট এডিটর ট্যাব -->
                 <div id="admin-tab-docs" class="hidden space-y-4">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide">সেবার ধরন নির্বাচন করে চার্জ ও ডকুমেন্ট এডিট করুন</h4>
@@ -589,7 +673,7 @@
                     </div>
                 </div>
 
-                <!-- ৪. বিশেষ বন্ধের দিন (Custom Holidays) ট্যাব -->
+                <!-- ৫. বিশেষ বন্ধের দিন (Custom Holidays) ট্যাব -->
                 <div id="admin-tab-holidays" class="hidden space-y-4">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
@@ -612,7 +696,7 @@
                     </div>
                 </div>
 
-                <!-- ৫. লিংক ম্যানেজার ট্যাব -->
+                <!-- ৬. লিংক ম্যানেজার ট্যাব -->
                 <div id="admin-tab-links" class="hidden space-y-5">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide">নতুন লিংক যোগ করুন</h4>
@@ -636,7 +720,7 @@
                     <div id="admin-custom-options-manager-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
                 </div>
 
-                <!-- ৬. সিকিউরিটি ও ব্যাকআপ ট্যাব -->
+                <!-- ৭. সিকিউরিটি ও ব্যাকআপ ট্যাব -->
                 <div id="admin-tab-security" class="hidden space-y-4">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
                         <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wide">সিকিউরিটি প্রশ্ন ও পিন কোড আপডেট</h4>
@@ -699,8 +783,8 @@
             measurementId: "G-731GGW6DJ4"
         };
 
-        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v8';
-        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v8';
+        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v13';
+        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v13';
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'cdpo-amarpur-portal';
 
         const defaultSlotOptions = [
@@ -877,6 +961,7 @@
             ],
             customSections: [],
             customHolidays: [],
+            customBookingFields: [],
             uidaiDocsData: JSON.parse(JSON.stringify(defaultUidaiDocsData))
         };
 
@@ -917,13 +1002,161 @@
             }
         }
 
+        function renderDynamicBookingFields() {
+            const container = document.getElementById('dynamic-booking-fields-container');
+            if (!container) return;
+
+            const fields = Array.isArray(portalConfig.customBookingFields) ? portalConfig.customBookingFields : [];
+            if (fields.length === 0) {
+                container.innerHTML = "";
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            container.innerHTML = fields.map(field => {
+                const inputId = `custom-field-${escapeHTML(field.id)}`;
+                const reqAttr = field.required ? 'required' : '';
+                const reqStar = field.required ? ' *' : '';
+                const ph = escapeHTML(field.placeholder || `${field.label} লিখুন...`);
+                const isFullWidth = field.type === 'select' && fields.length % 2 === 1;
+
+                if (field.type === 'select') {
+                    const opts = (field.options || []).map(opt => `<option value="${escapeHTML(opt)}">${escapeHTML(opt)}</option>`).join('');
+                    return `
+                        <div class="${isFullWidth ? 'sm:col-span-2' : ''}">
+                            <label for="${inputId}" class="block text-xs font-bold text-slate-700 mb-1.5">${escapeHTML(field.label)}${reqStar}</label>
+                            <select id="${inputId}" data-field-id="${escapeHTML(field.id)}" data-field-label="${escapeHTML(field.label)}" ${reqAttr} class="dynamic-booking-input w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white">
+                                <option value="">-- নির্বাচন করুন --</option>
+                                ${opts}
+                            </select>
+                        </div>
+                    `;
+                }
+
+                const inputType = ['text', 'number', 'tel', 'email', 'date'].includes(field.type) ? field.type : 'text';
+                const extraAttrs = inputType === 'tel' ? 'pattern="[0-9]{10}" maxlength="10"' : '';
+
+                return `
+                    <div>
+                        <label for="${inputId}" class="block text-xs font-bold text-slate-700 mb-1.5">${escapeHTML(field.label)}${reqStar}</label>
+                        <input type="${inputType}" id="${inputId}" data-field-id="${escapeHTML(field.id)}" data-field-label="${escapeHTML(field.label)}" ${extraAttrs} ${reqAttr} placeholder="${ph}" class="dynamic-booking-input w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleFieldOptionsInput() {
+            const typeVal = document.getElementById('new-field-type')?.value;
+            const optsWrap = document.getElementById('new-field-options-wrap');
+            if (optsWrap) {
+                optsWrap.classList.toggle('hidden', typeVal !== 'select');
+            }
+        }
+
+        async function addCustomBookingField() {
+            if (!isAdminAuthenticated) return;
+            const label = (document.getElementById('new-field-label')?.value || '').trim();
+            const type = document.getElementById('new-field-type')?.value || 'text';
+            const placeholder = (document.getElementById('new-field-placeholder')?.value || '').trim();
+            const required = Boolean(document.getElementById('new-field-required')?.checked);
+            const rawOptions = (document.getElementById('new-field-options')?.value || '').trim();
+
+            if (!label) {
+                showToast("⚠️ অনুগ্রহ করে নতুন ফিল্ডের নাম লিখুন।");
+                return;
+            }
+
+            let options = [];
+            if (type === 'select') {
+                options = rawOptions.split(',').map(s => s.trim()).filter(Boolean);
+                if (options.length === 0) {
+                    showToast("⚠️ ড্রপডাউনের জন্য অন্তত একটি অপশন লিখুন।");
+                    return;
+                }
+            }
+
+            if (!Array.isArray(portalConfig.customBookingFields)) {
+                portalConfig.customBookingFields = [];
+            }
+
+            const newField = {
+                id: 'fld_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6),
+                label,
+                type,
+                placeholder,
+                required,
+                options
+            };
+
+            portalConfig.customBookingFields.push(newField);
+            await persistConfig();
+            renderDynamicBookingFields();
+            renderAdminCustomFieldsManager();
+
+            document.getElementById('new-field-label').value = "";
+            document.getElementById('new-field-placeholder').value = "";
+            document.getElementById('new-field-options').value = "";
+            document.getElementById('new-field-required').checked = true;
+            showToast(`✅ "${label}" ফিল্ডটি বুকিং ফর্মে যুক্ত হয়েছে!`);
+        }
+
+        async function deleteCustomBookingField(fieldId) {
+            if (!isAdminAuthenticated) return;
+            if (!Array.isArray(portalConfig.customBookingFields)) return;
+            portalConfig.customBookingFields = portalConfig.customBookingFields.filter(f => f.id !== fieldId);
+            await persistConfig();
+            renderDynamicBookingFields();
+            renderAdminCustomFieldsManager();
+            showToast("ফিল্ডটি বুকিং ফর্ম থেকে মুছে ফেলা হয়েছে।");
+        }
+
+        function renderAdminCustomFieldsManager() {
+            const listEl = document.getElementById('admin-custom-fields-list');
+            const badgeEl = document.getElementById('custom-fields-count-badge');
+            const fields = Array.isArray(portalConfig.customBookingFields) ? portalConfig.customBookingFields : [];
+            if (badgeEl) badgeEl.textContent = fields.length;
+            if (!listEl) return;
+
+            if (fields.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-500 bg-white p-3 rounded-xl border border-slate-200">এখনও কোনো কাস্টম ফিল্ড যোগ করা হয়নি। ওপরে নাম লিখে নতুন ফিল্ড যোগ করতে পারেন।</p>`;
+                return;
+            }
+
+            const typeNames = {
+                text: 'সাধারণ লেখা',
+                number: 'সংখ্যা',
+                tel: 'মোবাইল নম্বর',
+                email: 'ইমেইল',
+                date: 'তারিখ',
+                select: 'ড্রপডাউন তালিকা'
+            };
+
+            listEl.innerHTML = fields.map(f => `
+                <div class="flex items-center justify-between bg-white border border-slate-200 p-3 rounded-xl text-xs gap-2">
+                    <div class="min-w-0">
+                        <div class="font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+                            <span>${escapeHTML(f.label)}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">${escapeHTML(typeNames[f.type] || f.type)}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full ${f.required ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-slate-100 text-slate-600'}">${f.required ? 'বাধ্যতামূলক' : 'ঐচ্ছিক'}</span>
+                        </div>
+                        ${f.type === 'select' && (f.options || []).length > 0 ? `<div class="text-[11px] text-slate-500 mt-1 truncate">অপশন: ${escapeHTML(f.options.join(', '))}</div>` : ''}
+                    </div>
+                    <button type="button" onclick="deleteCustomBookingField('${escapeHTML(f.id)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-1.5 rounded-lg font-semibold shrink-0 cursor-pointer">
+                        মুছুন
+                    </button>
+                </div>
+            `).join('');
+        }
+
         function loadLocalCache() {
             try {
-                const c = localStorage.getItem(LOCAL_CFG_KEY);
+                const c = localStorage.getItem(LOCAL_CFG_KEY) || localStorage.getItem('cdpo_amarpur_portal_v12') || localStorage.getItem('cdpo_amarpur_portal_v11') || localStorage.getItem('cdpo_amarpur_portal_v10') || localStorage.getItem('cdpo_amarpur_portal_v9');
                 if (c) portalConfig = { ...defaultPortalConfig, ...JSON.parse(c) };
                 if (!portalConfig.uidaiDocsData) portalConfig.uidaiDocsData = JSON.parse(JSON.stringify(defaultUidaiDocsData));
                 if (!portalConfig.customHolidays) portalConfig.customHolidays = [];
-                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY);
+                if (!Array.isArray(portalConfig.customBookingFields)) portalConfig.customBookingFields = [];
+                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v12') || localStorage.getItem('cdpo_amarpur_bookings_v11') || localStorage.getItem('cdpo_amarpur_bookings_v10') || localStorage.getItem('cdpo_amarpur_bookings_v9');
                 if (b) {
                     const parsedBookings = JSON.parse(b);
                     bookingRecords = cleanOldBookings(parsedBookings);
@@ -1000,6 +1233,7 @@
                             pin: cloudData.pin ? String(cloudData.pin) : "31121999",
                             securityAnswer: cloudData.securityAnswer ? String(cloudData.securityAnswer) : defaultPortalConfig.securityAnswer,
                             customHolidays: Array.isArray(cloudData.customHolidays) ? cloudData.customHolidays : [],
+                            customBookingFields: Array.isArray(cloudData.customBookingFields) ? cloudData.customBookingFields : [],
                             uidaiDocsData: cloudData.uidaiDocsData ? { ...defaultUidaiDocsData, ...cloudData.uidaiDocsData } : JSON.parse(JSON.stringify(defaultUidaiDocsData))
                         };
                         saveLocalCache();
@@ -1280,6 +1514,8 @@
             }
 
             rebuildSlotOptions();
+            renderDynamicBookingFields();
+            renderAdminCustomFieldsManager();
 
             const docsData = portalConfig.uidaiDocsData || defaultUidaiDocsData;
             ['name', 'dob', 'address', 'biometric', 'mobile', 'email', 'child'].forEach(k => {
@@ -1459,13 +1695,25 @@
             const date = document.getElementById('book-date').value;
             const name = document.getElementById('book-name').value.trim();
             const phone = document.getElementById('book-phone').value.trim();
+            const address = document.getElementById('book-address').value.trim();
+            const parentGuardianName = document.getElementById('book-parent-guardian-name').value.trim();
+            const idLast4 = document.getElementById('book-id-last4').value.trim();
             const service = document.getElementById('book-service').value;
             const slot = document.getElementById('book-slot').value;
             const serviceInfo = getServiceInfoByValue(service);
             const serviceFee = serviceInfo.fee;
 
-            if (!name || !/^[0-9]{10}$/.test(phone)) {
-                showToast("⚠️ সঠিক নাম এবং ১০ সংখ্যার মোবাইল নম্বর দিন।");
+            const customFieldValues = [];
+            document.querySelectorAll('.dynamic-booking-input').forEach(inp => {
+                const fLabel = inp.getAttribute('data-field-label') || '';
+                const fVal = (inp.value || '').trim();
+                if (fLabel && fVal) {
+                    customFieldValues.push({ label: fLabel, value: fVal });
+                }
+            });
+
+            if (!name || !/^[0-9]{10}$/.test(phone) || !address || !parentGuardianName || !/^[0-9]{4}$/.test(idLast4)) {
+                showToast("⚠️ সঠিক নাম, ১০ সংখ্যার মোবাইল নম্বর, ঠিকানা, পিতা/স্বামী/মাতার নাম এবং ৪ সংখ্যার শেষ ডিজিট দিন।");
                 return;
             }
 
@@ -1501,7 +1749,11 @@
             const newBooking = {
                 token: token,
                 name: name,
+                parentGuardianName: parentGuardianName,
+                idLast4: idLast4,
                 phone: phone,
+                address: address,
+                customFields: customFieldValues,
                 service: service,
                 fee: serviceFee,
                 date: date,
@@ -1516,12 +1768,29 @@
 
             document.getElementById('slip-token').textContent = "#" + token;
             document.getElementById('slip-name').textContent = name;
+            document.getElementById('slip-parent-guardian-name').textContent = parentGuardianName;
+            document.getElementById('slip-id-last4').textContent = "XXXX" + idLast4;
             document.getElementById('slip-phone').textContent = phone;
+            document.getElementById('slip-address').textContent = address;
             document.getElementById('slip-service').textContent = service;
             document.getElementById('slip-datetime').textContent = `${date} (${slot})`;
             document.getElementById('slip-fee').textContent = serviceFee;
 
-            lastSlipText = `*${portalConfig.officeName}*\nটোকেন নং: #${token}\nনাম: ${name}\nমোবাইল: ${phone}\nসেবা: ${service}\nনির্ধারিত চার্জ: ${serviceFee}\nতারিখ ও সময়: ${date} (${slot})`;
+            const slipCustomEl = document.getElementById('slip-custom-fields-list');
+            if (slipCustomEl) {
+                if (customFieldValues.length > 0) {
+                    slipCustomEl.classList.remove('hidden');
+                    slipCustomEl.innerHTML = customFieldValues.map(cf => `
+                        <div><span class="text-slate-500">${escapeHTML(cf.label)}:</span> <strong class="text-slate-900 block sm:inline">${escapeHTML(cf.value)}</strong></div>
+                    `).join('');
+                } else {
+                    slipCustomEl.classList.add('hidden');
+                    slipCustomEl.innerHTML = "";
+                }
+            }
+
+            const customLines = customFieldValues.map(cf => `${cf.label}: ${cf.value}`).join('\n');
+            lastSlipText = `*${portalConfig.officeName}*\nটোকেন নং: #${token}\nনাম: ${name}\nপিতা/স্বামী/মাতার নাম: ${parentGuardianName}\nশেষ ৪ ডিজিট: XXXX${idLast4}\nমোবাইল: ${phone}\nঠিকানা: ${address}${customLines ? '\n' + customLines : ''}\nসেবা: ${service}\nনির্ধারিত চার্জ: ${serviceFee}\nতারিখ ও সময়: ${date} (${slot})`;
 
             const slipCard = document.getElementById('booking-slip-card');
             slipCard.classList.remove('hidden');
@@ -1578,7 +1847,11 @@
         function printBookingSlip() {
             const token = escapeHTML(document.getElementById('slip-token')?.textContent || "");
             const name = escapeHTML(document.getElementById('slip-name')?.textContent || "");
+            const parentGuardianName = escapeHTML(document.getElementById('slip-parent-guardian-name')?.textContent || "");
+            const idLast4 = escapeHTML(document.getElementById('slip-id-last4')?.textContent || "");
             const phone = escapeHTML(document.getElementById('slip-phone')?.textContent || "");
+            const address = escapeHTML(document.getElementById('slip-address')?.textContent || "");
+            const customHtml = document.getElementById('slip-custom-fields-list')?.innerHTML || "";
             const service = escapeHTML(document.getElementById('slip-service')?.textContent || "");
             const datetime = escapeHTML(document.getElementById('slip-datetime')?.textContent || "");
             const fee = escapeHTML(document.getElementById('slip-fee')?.textContent || "");
@@ -1619,7 +1892,11 @@
                             </div>
                             <div class="details">
                                 <div><strong>আবেদনকারীর নাম:</strong> ${name}</div>
+                                <div><strong>পিতা/স্বামী/মাতার নাম:</strong> ${parentGuardianName}</div>
+                                <div><strong>শেষ ৪ ডিজিট:</strong> ${idLast4}</div>
                                 <div><strong>মোবাইল নম্বর:</strong> ${phone}</div>
+                                <div><strong>ঠিকানা:</strong> ${address}</div>
+                                ${customHtml ? `<div style="margin-top:6px; padding-top:6px; border-top:1px dashed #cbd5e1;">${customHtml}</div>` : ''}
                                 <div><strong>সেবার ধরন:</strong> ${service}</div>
                                 <div><strong>তারিখ ও সময়:</strong> <span style="color: #0f766e; font-weight: bold;">${datetime}</span></div>
                                 <div><strong>নির্ধারিত চার্জ (অফিসে দেয়):</strong> <span style="color: #047857; font-weight: bold;">${fee}</span></div>
@@ -1700,7 +1977,7 @@
         function switchAdminTab(tab) {
             if (!isAdminAuthenticated) return;
 
-            ['bookings', 'info', 'docs', 'holidays', 'links', 'security'].forEach(t => {
+            ['bookings', 'fields', 'info', 'docs', 'holidays', 'links', 'security'].forEach(t => {
                 const isCurrent = t === tab;
                 const el = document.getElementById(`admin-tab-${t}`);
                 const btn = document.getElementById(`tab-btn-${t}`);
@@ -1713,6 +1990,7 @@
             });
 
             if (tab === 'bookings') renderBookingList();
+            if (tab === 'fields') renderAdminCustomFieldsManager();
             if (tab === 'info') {
                 document.getElementById('edit-office-name').value = portalConfig.officeName;
                 document.getElementById('edit-daily-slot-limit').value = getEffectiveDailyLimit();
@@ -1875,7 +2153,16 @@
             }
 
             const filtered = bookingRecords.filter(b => {
+                const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "";
+                const l4 = b.idLast4 || "";
+                const customText = Array.isArray(b.customFields)
+                    ? b.customFields.map(cf => `${cf.label} ${cf.value}`).join(' ').toLowerCase()
+                    : '';
                 const matchesQuery = (b.name || "").toLowerCase().includes(query) ||
+                    pgName.toLowerCase().includes(query) ||
+                    l4.toLowerCase().includes(query) ||
+                    (b.address || "").toLowerCase().includes(query) ||
+                    customText.includes(query) ||
                     (b.token || "").toLowerCase().includes(query) ||
                     (b.phone || "").includes(query) ||
                     (b.date || "").includes(query) ||
@@ -1897,10 +2184,22 @@
                     return;
                 }
 
-                spreadsheetBody.innerHTML = filtered.map(b => `
+                spreadsheetBody.innerHTML = filtered.map(b => {
+                    const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "";
+                    const l4 = b.idLast4 || "";
+                    const customRows = Array.isArray(b.customFields) && b.customFields.length > 0
+                        ? b.customFields.map(cf => `<div class="text-[11px] text-slate-700"><span class="font-semibold text-teal-900">${escapeHTML(cf.label)}:</span> ${escapeHTML(cf.value)}</div>`).join('')
+                        : '';
+                    return `
                     <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
                         <td class="p-3 font-extrabold text-teal-800">#${escapeHTML(b.token)}</td>
-                        <td class="p-3 font-bold text-slate-900">${escapeHTML(b.name)}</td>
+                        <td class="p-3 text-slate-900 max-w-[250px]">
+                            <div class="font-bold">${escapeHTML(b.name)}</div>
+                            ${pgName ? `<div class="text-[11px] text-slate-600">পিতা/স্বামী/মাতা: ${escapeHTML(pgName)}</div>` : ''}
+                            ${l4 ? `<div class="text-[11px] font-semibold text-teal-800">শেষ ৪ ডিজিট: XXXX${escapeHTML(l4)}</div>` : ''}
+                            ${b.address ? `<div class="text-[11px] text-slate-500 truncate" title="${escapeHTML(b.address)}">📍 ${escapeHTML(b.address)}</div>` : ''}
+                            ${customRows}
+                        </td>
                         <td class="p-3 text-slate-700">${escapeHTML(b.phone)}</td>
                         <td class="p-3 text-slate-600 max-w-[200px]">
                             <div class="truncate font-medium" title="${escapeHTML(b.service)}">${escapeHTML(b.service)}</div>
@@ -1921,7 +2220,8 @@
                             </button>
                         </td>
                     </tr>
-                `).join('');
+                `;
+                }).join('');
             }
         }
 
@@ -2298,6 +2598,9 @@
             backToAdminLogin,
             resetForgottenPassword,
             switchAdminTab,
+            toggleFieldOptionsInput,
+            addCustomBookingField,
+            deleteCustomBookingField,
             loadDocCategoryIntoAdminEditor,
             saveDocCategoryEdits,
             prevNoticeSlide,
