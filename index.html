@@ -241,7 +241,7 @@
                 </div>
 
                 <form id="booking-form" onsubmit="handleBookingSubmit(event)" class="space-y-5">
-                    <!-- ডাইনামিক স্ট্যান্ডার্ড / পুরনো ফিল্ডসমূহ (অ্যাডমিন থেকে ডিলিট বা রিস্টোর করা যায়) -->
+                    <!-- ডাইনামিক স্ট্যান্ডার্ড / পুরনো ফিল্ডসমূহ -->
                     <div id="standard-booking-fields-container" class="space-y-4"></div>
 
                     <!-- পোর্টাল থেকে অ্যাড করা অতিরিক্ত কাস্টম তথ্য ফিল্ডসমূহ -->
@@ -276,7 +276,7 @@
                             <span id="daily-remaining-badge" class="text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-lg border border-teal-200">প্রতিদিন সর্বোচ্চ ২০ জন</span>
                         </div>
                         <select id="book-slot" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white"></select>
-                        <p id="slot-availability-hint" class="text-[11px] text-slate-500 mt-1">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একদিনে একটি মোবাইল নম্বর দিয়ে শুধুমাত্র ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।</p>
+                        <p id="slot-availability-hint" class="text-[11px] text-slate-500 mt-1">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একদিনে একটি মোবাইল নম্বর ও একটি আধার নম্বর দিয়ে সর্বোচ্চ ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।</p>
                     </div>
 
                     <!-- ফর্মের নিচে অতিরিক্ত তথ্য / নোটিশ বক্স -->
@@ -309,15 +309,15 @@
                         <p class="text-xs text-slate-500">অফিসিয়াল অ্যাপয়েন্টমেন্ট কনফার্মেশন স্লিপ</p>
                     </div>
                     <div class="text-right bg-teal-50 px-3.5 py-2 rounded-2xl border border-teal-200">
-                        <p class="text-[11px] text-slate-500 font-semibold">টোকেন নং</p>
+                        <p class="text-[11px] text-slate-500 font-semibold">টোকেন নম্বর</p>
                         <p id="slip-token" class="text-lg font-extrabold text-teal-800">#AMP-101</p>
                     </div>
                 </div>
 
                 <div id="slip-details-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <div id="slip-row-name"><span class="text-slate-500">আবেদনকারীর নাম:</span> <strong id="slip-name" class="text-slate-900 block sm:inline"></strong></div>
+                    <div id="slip-row-name"><span class="text-slate-500">নাম:</span> <strong id="slip-name" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-row-parent"><span class="text-slate-500">পিতা/স্বামী/মাতার নাম:</span> <strong id="slip-parent-guardian-name" class="text-slate-900 block sm:inline"></strong></div>
-                    <div id="slip-row-last4"><span class="text-slate-500">আধারের শেষ চারটি ডিজিট (যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার কার্ডের লাস্ট চারটি ডিজিট):</span> <strong id="slip-id-last4" class="text-slate-900 block sm:inline"></strong></div>
+                    <div id="slip-row-last4"><span class="text-slate-500">আধার নম্বর (যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার নম্বর):</span> <strong id="slip-id-last4" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-row-phone"><span class="text-slate-500">মোবাইল নম্বর:</span> <strong id="slip-phone" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-row-address" class="sm:col-span-2"><span class="text-slate-500">ঠিকানা:</span> <strong id="slip-address" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-custom-fields-list" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200/80 hidden"></div>
@@ -361,7 +361,7 @@
 
     <!-- সুরক্ষিত অ্যাডমিন ও সেটিংস প্যানেল মডাল -->
     <div id="admin-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-3xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-6xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                     <i class="fas fa-gear text-teal-700"></i> অ্যাডমিন ও সেটিংস প্যানেল (Cloud Synced)
@@ -430,7 +430,7 @@
             <div id="admin-settings-box" class="hidden space-y-5">
                 <div class="flex flex-wrap gap-1 bg-slate-100 p-1.5 rounded-2xl">
                     <button type="button" id="tab-btn-bookings" onclick="switchAdminTab('bookings')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold bg-white text-teal-800 shadow-sm transition cursor-pointer">
-                        <i class="fas fa-clipboard-list mr-1"></i> বুকিং তালিকা (<span id="booking-count-badge">0</span>)
+                        <i class="fas fa-clipboard-list mr-1"></i> বুকিং চেকলিস্ট (<span id="booking-count-badge">0</span>)
                     </button>
                     <button type="button" id="tab-btn-fields" onclick="switchAdminTab('fields')" class="flex-1 min-w-[90px] py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/50 transition cursor-pointer">
                         <i class="fas fa-plus-square mr-1"></i> ফর্ম ফিল্ডস (<span id="custom-fields-count-badge">0</span>)
@@ -452,7 +452,7 @@
                     </button>
                 </div>
 
-                <!-- ১. বুকিং তালিকা ট্যাব -->
+                <!-- ১. বুকিং চেকলিস্ট ট্যাব -->
                 <div id="admin-tab-bookings" class="hidden space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                         <div class="flex flex-wrap items-center gap-2">
@@ -470,7 +470,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="নাম, পিতা/স্বামী/মাতার নাম, আধারের শেষ ৪ ডিজিট, ঠিকানা, অতিরিক্ত তথ্য, টোকেন বা মোবাইল দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs outline-none">
+                        <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="টোকেন নম্বর, নাম, পিতা/স্বামী/মাতার নাম, আধার নম্বর, মোবাইল নম্বর, ঠিকানা বা অতিরিক্ত তথ্য দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs outline-none">
                     </div>
 
                     <div id="date-wise-summary-bar" class="flex flex-wrap gap-1.5 text-[11px]"></div>
@@ -478,10 +478,14 @@
                     <div id="admin-booking-list-container" class="overflow-x-auto border border-slate-200 rounded-2xl bg-white shadow-xs">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
-                                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 uppercase tracking-wider font-bold">
-                                    <th class="p-3">টোকেন</th>
-                                    <th class="p-3">নাম, পিতা/স্বামী/মাতা, আধার শেষ ৪ ডিজিট, ঠিকানা ও অতিরিক্ত তথ্য</th>
-                                    <th class="p-3">মোবাইল</th>
+                                <tr class="bg-slate-100 text-slate-800 border-b border-slate-200 font-bold whitespace-nowrap">
+                                    <th class="p-3">টোকেন নম্বর</th>
+                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">পিতা/স্বামী/মাতার নাম</th>
+                                    <th class="p-3">আধার নম্বর</th>
+                                    <th class="p-3">মোবাইল নম্বর</th>
+                                    <th class="p-3">ঠিকানা</th>
+                                    <th class="p-3">অতিরিক্ত তথ্য</th>
                                     <th class="p-3">সেবা ও চার্জ</th>
                                     <th class="p-3">তারিখ ও স্লট</th>
                                     <th class="p-3">স্ট্যাটাস</th>
@@ -727,7 +731,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">নতুন অ্যাডমিন পাসওয়ার্ড (PIN) *</label>
-                            <input type="password" id="set-new-pin" placeholder="কমপক্ষে ৪ সংখ্যার পিন" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-bold text-xs outline-none bg-white">
+                            <input type="password" id="set-new-pin" placeholder="কমপক্ষে ৪ সংখ্যার নতুন পিন" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-bold text-xs outline-none bg-white">
                         </div>
                         <p id="pin-change-status" class="hidden text-xs font-bold px-3 py-2 rounded-xl"></p>
                         <button type="button" onclick="saveSecuritySettings()" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">
@@ -776,11 +780,11 @@
             measurementId: "G-731GGW6DJ4"
         };
 
-        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v16';
-        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v16';
+        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v19';
+        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v19';
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'cdpo-amarpur-portal';
 
-        const LAST4_FIELD_LABEL = "আধারের শেষ চারটি ডিজিট (যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার কার্ডের লাস্ট চারটি ডিজিট)";
+        const LAST4_FIELD_LABEL = "আধার নম্বর (১২ ডিজিট • যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার নম্বর)";
 
         const standardFieldDefinitions = [
             {
@@ -789,14 +793,6 @@
                 label: 'আবেদনকারীর পূর্ণ নাম',
                 placeholder: 'যেমন: রাহুল দেববর্মা',
                 type: 'text',
-                fullWidth: false
-            },
-            {
-                key: 'phone',
-                inputId: 'book-phone',
-                label: 'মোবাইল / হোয়াটসঅ্যাপ নম্বর',
-                placeholder: '১০ সংখ্যার মোবাইল নম্বর',
-                type: 'tel',
                 fullWidth: false
             },
             {
@@ -811,8 +807,16 @@
                 key: 'idLast4',
                 inputId: 'book-id-last4',
                 label: LAST4_FIELD_LABEL,
-                placeholder: 'যেমন: 1234',
-                type: 'last4',
+                placeholder: '১২ সংখ্যার আধার নম্বর',
+                type: 'id12',
+                fullWidth: false
+            },
+            {
+                key: 'phone',
+                inputId: 'book-phone',
+                label: 'মোবাইল / হোয়াটসঅ্যাপ নম্বর (১০ ডিজিট)',
+                placeholder: '১০ সংখ্যার মোবাইল নম্বর',
+                type: 'tel',
                 fullWidth: false
             },
             {
@@ -828,6 +832,19 @@
         const bengaliDigitsMap = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯' };
         function toBengaliNumber(numOrStr) {
             return String(numOrStr).replace(/[0-9]/g, d => bengaliDigitsMap[d] || d);
+        }
+
+        function sanitizeDigitsOnly(val, maxLen) {
+            return String(val || '').replace(/[^0-9]/g, '').slice(0, maxLen);
+        }
+
+        function formatMaskedIdDisplay(rawVal) {
+            const digits = sanitizeDigitsOnly(rawVal, 12);
+            if (!digits) return "";
+            if (digits.length >= 4) {
+                return `XXXX-XXXX-${digits.slice(-4)}`;
+            }
+            return digits;
         }
 
         function formatMinutesTo12HrBn(totalMins) {
@@ -994,7 +1011,7 @@
             bookingIntroText: "বুকিং করার সাথে সাথেই আপনার তথ্য অটোমেটিক ক্লাউড স্টোরেজে সংরক্ষিত হবে এবং অফিসিয়াল পিডিএফ স্লিপ জেনারেট হবে।",
             bookingExtraInfo: "",
             bookingFooterInfo: "",
-            slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একদিনে একটি মোবাইল নম্বর দিয়ে শুধুমাত্র ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।",
+            slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একদিনে একটি মোবাইল নম্বর ও একটি আধার নম্বর দিয়ে সর্বোচ্চ ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।",
             pin: "31121999",
             securityQuestion: "তোমার প্রিয় মানুষটার নাম কি?",
             securityAnswer: "Sangita",
@@ -1040,6 +1057,14 @@
             return !getHiddenStandardFields().includes(key);
         }
 
+        function handleDigitLimitInput(inputEl, maxLen) {
+            if (!inputEl) return;
+            const cleaned = sanitizeDigitsOnly(inputEl.value, maxLen);
+            if (inputEl.value !== cleaned) {
+                inputEl.value = cleaned;
+            }
+        }
+
         function renderStandardBookingFields() {
             const container = document.getElementById('standard-booking-fields-container');
             if (!container) return;
@@ -1062,14 +1087,20 @@
             if (paired.length > 0) {
                 html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">` + paired.map(f => {
                     const isLast = paired.length % 2 === 1 && f === paired[paired.length - 1];
-                    const attrs = f.type === 'tel'
-                        ? 'pattern="[0-9]{10}" maxlength="10"'
-                        : (f.type === 'last4' ? 'pattern="[0-9]{4}" maxlength="4" inputmode="numeric"' : '');
-                    const inpType = f.type === 'tel' ? 'tel' : 'text';
+                    const isPhone = f.type === 'tel';
+                    const isId12 = f.type === 'id12';
+                    const attrs = isPhone
+                        ? 'pattern="[0-9]{10}" maxlength="10" inputmode="numeric" oninput="handleDigitLimitInput(this, 10)"'
+                        : (isId12 ? 'pattern="[0-9]{12}" maxlength="12" inputmode="numeric" oninput="handleDigitLimitInput(this, 12)"' : '');
+                    const inpType = (isPhone || isId12) ? 'tel' : 'text';
+                    const helperTxt = isPhone
+                        ? '<span class="text-[10px] text-slate-500 block mt-1">• ঠিক ১০ সংখ্যার মোবাইল নম্বর (একদিনে সর্বোচ্চ ২টি বুকিং)</span>'
+                        : (isId12 ? '<span class="text-[10px] text-slate-500 block mt-1">• ঠিক ১২ সংখ্যার আধার নম্বর (একদিনে সর্বোচ্চ ২টি বুকিং)</span>' : '');
                     return `
                         <div class="${isLast ? 'sm:col-span-2' : ''}">
                             <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(f.label)} *</label>
                             <input type="${inpType}" id="${f.inputId}" required ${attrs} placeholder="${escapeHTML(f.placeholder)}" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
+                            ${helperTxt}
                         </div>
                     `;
                 }).join('') + `</div>`;
@@ -1195,7 +1226,7 @@
                 }
 
                 const inputType = ['text', 'number', 'tel', 'email', 'date'].includes(field.type) ? field.type : 'text';
-                const extraAttrs = inputType === 'tel' ? 'pattern="[0-9]{10}" maxlength="10"' : '';
+                const extraAttrs = inputType === 'tel' ? 'pattern="[0-9]{10}" maxlength="10" inputmode="numeric" oninput="handleDigitLimitInput(this, 10)"' : '';
 
                 return `
                     <div>
@@ -1312,13 +1343,13 @@
 
         function loadLocalCache() {
             try {
-                const c = localStorage.getItem(LOCAL_CFG_KEY) || localStorage.getItem('cdpo_amarpur_portal_v15') || localStorage.getItem('cdpo_amarpur_portal_v14') || localStorage.getItem('cdpo_amarpur_portal_v13');
+                const c = localStorage.getItem(LOCAL_CFG_KEY) || localStorage.getItem('cdpo_amarpur_portal_v18') || localStorage.getItem('cdpo_amarpur_portal_v17');
                 if (c) portalConfig = { ...defaultPortalConfig, ...JSON.parse(c) };
                 if (!portalConfig.uidaiDocsData) portalConfig.uidaiDocsData = JSON.parse(JSON.stringify(defaultUidaiDocsData));
                 if (!portalConfig.customHolidays) portalConfig.customHolidays = [];
                 if (!Array.isArray(portalConfig.customBookingFields)) portalConfig.customBookingFields = [];
                 if (!Array.isArray(portalConfig.hiddenStandardFields)) portalConfig.hiddenStandardFields = [];
-                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v15') || localStorage.getItem('cdpo_amarpur_bookings_v14') || localStorage.getItem('cdpo_amarpur_bookings_v13');
+                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v18') || localStorage.getItem('cdpo_amarpur_bookings_v17');
                 if (b) {
                     const parsedBookings = JSON.parse(b);
                     bookingRecords = cleanOldBookings(parsedBookings);
@@ -1674,7 +1705,7 @@
             }
             const ruleNoteEl = document.getElementById('slot-availability-hint');
             if (ruleNoteEl) {
-                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একদিনে একটি মোবাইল নম্বর দিয়ে শুধুমাত্র ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।`;
+                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একদিনে একটি মোবাইল নম্বর ও একটি আধার নম্বর দিয়ে সর্বোচ্চ ২টি অ্যাপয়েন্টমেন্ট বুক করা যাবে।`;
             }
 
             rebuildSlotOptions();
@@ -1852,10 +1883,20 @@
             return token;
         }
 
+        function showBookingErrorNotice(msg) {
+            const noticeBox = document.getElementById('booking-limit-notice');
+            const noticeText = document.getElementById('booking-limit-notice-text');
+            if (noticeBox && noticeText) {
+                noticeText.textContent = msg;
+                noticeBox.classList.remove('hidden');
+                noticeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            showToast("⚠️ " + msg);
+        }
+
         async function handleBookingSubmit(e) {
             e.preventDefault();
             const noticeBox = document.getElementById('booking-limit-notice');
-            const noticeText = document.getElementById('booking-limit-notice-text');
             if (noticeBox) noticeBox.classList.add('hidden');
 
             if (!validateBookingDate()) return;
@@ -1865,13 +1906,13 @@
             const phoneEl = document.getElementById('book-phone');
             const addressEl = document.getElementById('book-address');
             const parentEl = document.getElementById('book-parent-guardian-name');
-            const last4El = document.getElementById('book-id-last4');
+            const id12El = document.getElementById('book-id-last4');
 
             const name = nameEl ? nameEl.value.trim() : "";
-            const phone = phoneEl ? phoneEl.value.trim() : "";
+            const phone = phoneEl ? sanitizeDigitsOnly(phoneEl.value, 10) : "";
             const address = addressEl ? addressEl.value.trim() : "";
             const parentGuardianName = parentEl ? parentEl.value.trim() : "";
-            const idLast4 = last4El ? last4El.value.trim() : "";
+            const rawId12 = id12El ? sanitizeDigitsOnly(id12El.value, 12) : "";
             const service = document.getElementById('book-service').value;
             const slot = document.getElementById('book-slot').value;
             const serviceInfo = getServiceInfoByValue(service);
@@ -1887,31 +1928,38 @@
             });
 
             if (phoneEl && !/^[0-9]{10}$/.test(phone)) {
-                showToast("⚠️ অনুগ্রহ করে সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন।");
+                showBookingErrorNotice("মোবাইল নম্বর অবশ্যই ঠিক ১০ সংখ্যার হতে হবে (১০টির কম বা বেশি গ্রহণযোগ্য নয়)।");
                 return;
             }
-            if (last4El && !/^[0-9]{4}$/.test(idLast4)) {
-                showToast("⚠️ অনুগ্রহ করে সঠিক ৪ সংখ্যার শেষ ডিজিট দিন।");
+            if (id12El && !/^[0-9]{12}$/.test(rawId12)) {
+                showBookingErrorNotice("আধার নম্বর অবশ্যই ঠিক ১২ সংখ্যার হতে হবে (১২টির কম বা বেশি গ্রহণযোগ্য নয়)।");
                 return;
             }
 
             if (phone) {
                 const dailyPhoneBookingCount = bookingRecords.filter(b => b.date === date && b.phone === phone).length;
                 if (dailyPhoneBookingCount >= 2) {
-                    const limitMessage = "একটি মোবাইল নাম্বার দিয়ে শুধুমাত্র দুটি অ্যাপয়েন্টমেন্ট বুক করা যাবে";
-                    if (noticeBox && noticeText) {
-                        noticeText.textContent = limitMessage;
-                        noticeBox.classList.remove('hidden');
-                        noticeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                    showToast("⚠️ " + limitMessage);
+                    showBookingErrorNotice("একটি মোবাইল নম্বর দিয়ে একদিনে শুধুমাত্র দুটি অ্যাপয়েন্টমেন্ট বুক করা যাবে।");
+                    return;
+                }
+            }
+
+            if (rawId12) {
+                const dailyIdBookingCount = bookingRecords.filter(b => {
+                    if (b.date !== date) return false;
+                    const storedFullId = sanitizeDigitsOnly(b.idFull12 || "", 12);
+                    if (storedFullId) return storedFullId === rawId12;
+                    return false;
+                }).length;
+                if (dailyIdBookingCount >= 2) {
+                    showBookingErrorNotice("একটি আধার নম্বর দিয়ে একদিনে শুধুমাত্র দুটি অ্যাপয়েন্টমেন্ট বুক করা যাবে।");
                     return;
                 }
             }
 
             const isSlotTaken = bookingRecords.some(b => b.date === date && b.slot === slot);
             if (isSlotTaken) {
-                showToast("⚠️ দুঃখিত! এই তারিখ ও সময় স্লটটি ইতিমধ্যেই বুক হয়ে গেছে। অনুগ্রহ করে অন্য সময় স্লট নির্বাচন করুন।");
+                showBookingErrorNotice("দুঃখিত! এই তারিখ ও সময় স্লটটি ইতিমধ্যেই বুক হয়ে গেছে। অনুগ্রহ করে অন্য সময় স্লট নির্বাচন করুন।");
                 updateSlotAvailability();
                 return;
             }
@@ -1919,18 +1967,21 @@
             const limit = getEffectiveDailyLimit();
             const countForDate = bookingRecords.filter(b => b.date === date).length;
             if (countForDate >= limit) {
-                showToast(`⚠️ দুঃখিত, এই তারিখে ইতিমধ্যেই ${toBengaliNumber(limit)} জনের বুকিং সম্পন্ন হয়ে গেছে! অন্য তারিখ বেছে নিন।`);
+                showBookingErrorNotice(`দুঃখিত, এই তারিখে ইতিমধ্যেই ${toBengaliNumber(limit)} জনের বুকিং সম্পন্ন হয়ে গেছে! অন্য তারিখ বেছে নিন।`);
                 return;
             }
 
             const token = generateUniqueToken();
             lastGeneratedToken = token;
+            const maskedIdDisplay = formatMaskedIdDisplay(rawId12);
+            const last4Only = rawId12.slice(-4);
 
             const newBooking = {
                 token: token,
                 name: name,
                 parentGuardianName: parentGuardianName,
-                idLast4: idLast4,
+                idLast4: last4Only,
+                idFull12: rawId12,
                 phone: phone,
                 address: address,
                 customFields: customFieldValues,
@@ -1954,14 +2005,14 @@
 
             if (rowName) rowName.classList.toggle('hidden', !name);
             if (rowParent) rowParent.classList.toggle('hidden', !parentGuardianName);
-            if (rowLast4) rowLast4.classList.toggle('hidden', !idLast4);
+            if (rowLast4) rowLast4.classList.toggle('hidden', !maskedIdDisplay);
             if (rowPhone) rowPhone.classList.toggle('hidden', !phone);
             if (rowAddress) rowAddress.classList.toggle('hidden', !address);
 
             document.getElementById('slip-token').textContent = "#" + token;
             document.getElementById('slip-name').textContent = name;
             document.getElementById('slip-parent-guardian-name').textContent = parentGuardianName;
-            document.getElementById('slip-id-last4').textContent = idLast4 ? "XXXX" + idLast4 : "";
+            document.getElementById('slip-id-last4').textContent = maskedIdDisplay;
             document.getElementById('slip-phone').textContent = phone;
             document.getElementById('slip-address').textContent = address;
             document.getElementById('slip-service').textContent = service;
@@ -1981,11 +2032,11 @@
                 }
             }
 
-            const lines = [`*${portalConfig.officeName}*`, `টোকেন নং: #${token}`];
+            const lines = [`*${portalConfig.officeName}*`, `টোকেন নম্বর: #${token}`];
             if (name) lines.push(`নাম: ${name}`);
             if (parentGuardianName) lines.push(`পিতা/স্বামী/মাতার নাম: ${parentGuardianName}`);
-            if (idLast4) lines.push(`${LAST4_FIELD_LABEL}: XXXX${idLast4}`);
-            if (phone) lines.push(`মোবাইল: ${phone}`);
+            if (maskedIdDisplay) lines.push(`আধার নম্বর: ${maskedIdDisplay}`);
+            if (phone) lines.push(`মোবাইল নম্বর: ${phone}`);
             if (address) lines.push(`ঠিকানা: ${address}`);
             customFieldValues.forEach(cf => lines.push(`${cf.label}: ${cf.value}`));
             lines.push(`সেবা: ${service}`);
@@ -2049,7 +2100,7 @@
             const token = escapeHTML(document.getElementById('slip-token')?.textContent || "");
             const name = escapeHTML(document.getElementById('slip-name')?.textContent || "");
             const parentGuardianName = escapeHTML(document.getElementById('slip-parent-guardian-name')?.textContent || "");
-            const idLast4 = escapeHTML(document.getElementById('slip-id-last4')?.textContent || "");
+            const idMasked = escapeHTML(document.getElementById('slip-id-last4')?.textContent || "");
             const phone = escapeHTML(document.getElementById('slip-phone')?.textContent || "");
             const address = escapeHTML(document.getElementById('slip-address')?.textContent || "");
             const customHtml = document.getElementById('slip-custom-fields-list')?.innerHTML || "";
@@ -2087,14 +2138,14 @@
                                     <p style="margin: 0; font-size: 12px; color: #64748b;">অমরপুর, গোমতী জেলা, ত্রিপুরা</p>
                                 </div>
                                 <div class="token-box">
-                                    <div style="font-size: 11px; color: #64748b;">টোকেন নং</div>
+                                    <div style="font-size: 11px; color: #64748b;">টোকেন নম্বর</div>
                                     <div style="font-size: 20px; font-weight: bold; color: #0f766e;">${token}</div>
                                 </div>
                             </div>
                             <div class="details">
-                                ${name ? `<div><strong>আবেদনকারীর নাম:</strong> ${name}</div>` : ''}
+                                ${name ? `<div><strong>নাম:</strong> ${name}</div>` : ''}
                                 ${parentGuardianName ? `<div><strong>পিতা/স্বামী/মাতার নাম:</strong> ${parentGuardianName}</div>` : ''}
-                                ${idLast4 ? `<div><strong>${escapeHTML(LAST4_FIELD_LABEL)}:</strong> ${idLast4}</div>` : ''}
+                                ${idMasked ? `<div><strong>আধার নম্বর:</strong> ${idMasked}</div>` : ''}
                                 ${phone ? `<div><strong>মোবাইল নম্বর:</strong> ${phone}</div>` : ''}
                                 ${address ? `<div><strong>ঠিকানা:</strong> ${address}</div>` : ''}
                                 ${customHtml ? `<div style="margin-top:6px; padding-top:6px; border-top:1px dashed #cbd5e1;">${customHtml}</div>` : ''}
@@ -2145,7 +2196,7 @@
 
                     const imgData = canvas.toDataURL('image/png');
                     const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdf = new jsPDF('l', 'mm', 'a4');
 
                     const pageWidth = pdf.internal.pageSize.getWidth();
                     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -2359,12 +2410,14 @@
             const filtered = bookingRecords.filter(b => {
                 const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "";
                 const l4 = b.idLast4 || "";
+                const full12 = b.idFull12 || "";
                 const customText = Array.isArray(b.customFields)
                     ? b.customFields.map(cf => `${cf.label} ${cf.value}`).join(' ').toLowerCase()
                     : '';
                 const matchesQuery = (b.name || "").toLowerCase().includes(query) ||
                     pgName.toLowerCase().includes(query) ||
                     l4.toLowerCase().includes(query) ||
+                    full12.toLowerCase().includes(query) ||
                     (b.address || "").toLowerCase().includes(query) ||
                     customText.includes(query) ||
                     (b.token || "").toLowerCase().includes(query) ||
@@ -2379,7 +2432,7 @@
                 if (filtered.length === 0) {
                     spreadsheetBody.innerHTML = `
                         <tr>
-                            <td colspan="7" class="text-center py-8 text-slate-500 text-xs sm:text-sm bg-slate-50">
+                            <td colspan="11" class="text-center py-8 text-slate-500 text-xs sm:text-sm bg-slate-50">
                                 <i class="fas fa-folder-open text-2xl mb-2 text-slate-400 block"></i>
                                 ${filterDate ? `নির্বাচিত তারিখ (${escapeHTML(filterDate)})-তে কোনো বুকিং রেকর্ড নেই।` : 'এখনও কোনো বুকিং রেকর্ড পাওয়া যায়নি।'}
                             </td>
@@ -2389,22 +2442,21 @@
                 }
 
                 spreadsheetBody.innerHTML = filtered.map(b => {
-                    const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "";
-                    const l4 = b.idLast4 || "";
-                    const customRows = Array.isArray(b.customFields) && b.customFields.length > 0
-                        ? b.customFields.map(cf => `<div class="text-[11px] text-slate-700"><span class="font-semibold text-teal-900">${escapeHTML(cf.label)}:</span> ${escapeHTML(cf.value)}</div>`).join('')
-                        : '';
+                    const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "—";
+                    const l4 = b.idLast4 ? `XXXX-XXXX-${escapeHTML(b.idLast4)}` : "—";
+                    const addrCol = b.address ? `<div class="text-slate-700 min-w-[150px] max-w-[220px]">${escapeHTML(b.address)}</div>` : "—";
+                    const extraCol = Array.isArray(b.customFields) && b.customFields.length > 0
+                        ? `<div class="min-w-[140px] max-w-[220px] space-y-0.5">${b.customFields.map(cf => `<div class="text-[11px] text-slate-700"><span class="font-semibold text-teal-900">${escapeHTML(cf.label)}:</span> ${escapeHTML(cf.value)}</div>`).join('')}</div>`
+                        : "—";
                     return `
                     <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
-                        <td class="p-3 font-extrabold text-teal-800">#${escapeHTML(b.token)}</td>
-                        <td class="p-3 text-slate-900 max-w-[250px]">
-                            <div class="font-bold">${escapeHTML(b.name)}</div>
-                            ${pgName ? `<div class="text-[11px] text-slate-600">পিতা/স্বামী/মাতা: ${escapeHTML(pgName)}</div>` : ''}
-                            ${l4 ? `<div class="text-[11px] font-semibold text-teal-800">আধার শেষ ৪ ডিজিট: XXXX${escapeHTML(l4)}</div>` : ''}
-                            ${b.address ? `<div class="text-[11px] text-slate-500 truncate" title="${escapeHTML(b.address)}">📍 ${escapeHTML(b.address)}</div>` : ''}
-                            ${customRows}
-                        </td>
-                        <td class="p-3 text-slate-700">${escapeHTML(b.phone)}</td>
+                        <td class="p-3 font-extrabold text-teal-800 whitespace-nowrap">#${escapeHTML(b.token)}</td>
+                        <td class="p-3 font-bold text-slate-900 whitespace-nowrap">${escapeHTML(b.name || "—")}</td>
+                        <td class="p-3 text-slate-700 whitespace-nowrap">${escapeHTML(pgName)}</td>
+                        <td class="p-3 font-semibold text-teal-900 whitespace-nowrap">${l4}</td>
+                        <td class="p-3 text-slate-700 whitespace-nowrap">${escapeHTML(b.phone || "—")}</td>
+                        <td class="p-3 text-slate-700">${addrCol}</td>
+                        <td class="p-3 text-slate-700">${extraCol}</td>
                         <td class="p-3 text-slate-600 max-w-[200px]">
                             <div class="truncate font-medium" title="${escapeHTML(b.service)}">${escapeHTML(b.service)}</div>
                             <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">${escapeHTML(b.fee || getServiceInfoByValue(b.service || '').fee)}</span>
@@ -2802,6 +2854,7 @@
             backToAdminLogin,
             resetForgottenPassword,
             switchAdminTab,
+            handleDigitLimitInput,
             toggleFieldOptionsInput,
             addCustomBookingField,
             deleteCustomBookingField,
@@ -2859,4 +2912,3 @@
     </script>
 </body>
 </html>
-
