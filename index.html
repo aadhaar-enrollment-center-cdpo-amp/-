@@ -250,7 +250,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">সেবার ধরন নির্বাচন করুন *</label>
-                            <select id="book-service" required onchange="updateBookingDocPreview()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white">
+                            <select id="book-service" required onchange="handleServiceTypeChange()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white">
                                 <option value="নাম আপডেট (Demographic Update)">নাম আপডেট (Demographic Update)</option>
                                 <option value="জন্ম তারিখ (DOB) সংশোধন (Demographic Update)">জন্ম তারিখ (DOB) সংশোধন (Demographic Update)</option>
                                 <option value="ঠিকানা আপডেট (Demographic Update)">ঠিকানা আপডেট (Demographic Update)</option>
@@ -267,6 +267,30 @@
                         </div>
                     </div>
 
+                    <!-- আলাদাভাবে আধার নম্বর বক্স (আপডেট ও শিশু ০-৫ বছর অনুযায়ী ডাইনামিক) -->
+                    <div id="dedicated-aadhaar-box" class="bg-slate-50 border border-teal-200 rounded-2xl p-4 sm:p-5 space-y-3">
+                        <div id="update-aadhaar-field-wrap">
+                            <label id="update-aadhaar-label" for="book-aadhaar-12" class="block text-xs sm:text-sm font-bold text-slate-900 mb-1.5">
+                                আধার নম্বর (১২ ডিজিট) <span id="update-aadhaar-req-star" class="text-rose-600 font-extrabold">*</span>
+                            </label>
+                            <input type="tel" id="book-aadhaar-12" required inputmode="numeric" maxlength="12" minlength="12" pattern="[0-9]{12}" oninput="handleConfiguredAadhaarInput(this)" placeholder="১২ সংখ্যার আধার নম্বর লিখুন" class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-teal-600 outline-none text-sm font-semibold tracking-wider">
+                            <p id="update-aadhaar-helper" class="text-[11px] text-teal-800 font-medium mt-1.5">
+                                • বায়োমেট্রিক আপডেট ও ডেমোগ্রাফিক আপডেট সিলেক্ট করলে এই আধার নম্বর বাধ্যতামূলক • একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।
+                            </p>
+                        </div>
+
+                        <!-- শিশু (০-৫ বছর) এনরোলমেন্ট সিলেক্ট করলে খুলবে বাবা বা মায়ের আধার নম্বর ঘর -->
+                        <div id="child-parent-aadhaar-wrap" class="hidden bg-rose-50/70 border border-rose-200 rounded-2xl p-4 space-y-2">
+                            <label id="child-parent-aadhaar-label" for="book-child-parent-aadhaar" class="block text-xs sm:text-sm font-bold text-rose-950">
+                                শিশুর নতুন আধার কার্ড এনরোল্ড করতে বাবা বা মায়ের আধার নম্বর (১২ ডিজিট) <span class="text-rose-600 font-extrabold">*</span>
+                            </label>
+                            <input type="tel" id="book-child-parent-aadhaar" inputmode="numeric" maxlength="12" minlength="12" pattern="[0-9]{12}" oninput="handleConfiguredAadhaarInput(this)" placeholder="বাবা বা মায়ের ১২ সংখ্যার আধার নম্বর লিখুন" class="w-full px-4 py-3 rounded-xl border border-rose-300 bg-white focus:ring-2 focus:ring-rose-600 outline-none text-sm font-semibold tracking-wider">
+                            <p id="child-parent-aadhaar-helper" class="text-[11px] text-rose-900 font-medium">
+                                • শিশুদের নতুন আধার (০-৫ বছর) এনরোলমেন্টের জন্য বাবা বা মায়ের আধার নম্বর আবশ্যক • একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- সেবার সরকারি চার্জ ও ডকুমেন্ট গাইডলাইন বক্স -->
                     <div id="booking-doc-hint" class="bg-teal-50/80 border border-teal-200 rounded-2xl p-4 text-xs text-slate-800 space-y-2"></div>
 
@@ -276,7 +300,7 @@
                             <span id="daily-remaining-badge" class="text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-lg border border-teal-200">প্রতিদিন সর্বোচ্চ ২০ জন</span>
                         </div>
                         <select id="book-slot" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm bg-white"></select>
-                        <p id="slot-availability-hint" class="text-[11px] text-slate-500 mt-1">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একই আধার নম্বর ও একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।</p>
+                        <p id="slot-availability-hint" class="text-[11px] text-slate-500 mt-1">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।</p>
                     </div>
 
                     <!-- ফর্মের নিচে অতিরিক্ত তথ্য / নোটিশ বক্স -->
@@ -317,8 +341,8 @@
                 <div id="slip-details-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <div id="slip-row-name"><span class="text-slate-500">নাম:</span> <strong id="slip-name" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-row-parent"><span class="text-slate-500">পিতা/স্বামী/মাতার নাম:</span> <strong id="slip-parent-guardian-name" class="text-slate-900 block sm:inline"></strong></div>
-                    <div id="slip-row-last4"><span class="text-slate-500">আধার নম্বর (১২ ডিজিট • শিশুর ক্ষেত্রে বাবা/মায়ের):</span> <strong id="slip-id-last4" class="text-slate-900 block sm:inline"></strong></div>
-                    <div id="slip-row-phone"><span class="text-slate-500">মোবাইল নম্বর (১০ ডিজিট):</span> <strong id="slip-phone" class="text-slate-900 block sm:inline"></strong></div>
+                    <div id="slip-row-last4"><span id="slip-aadhaar-label-text" class="text-slate-500">আধার নম্বর:</span> <strong id="slip-id-last4" class="text-slate-900 block sm:inline"></strong></div>
+                    <div id="slip-row-phone"><span id="slip-phone-label-text" class="text-slate-500">মোবাইল নম্বর (১০ ডিজিট):</span> <strong id="slip-phone" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-row-address" class="sm:col-span-2"><span class="text-slate-500">ঠিকানা:</span> <strong id="slip-address" class="text-slate-900 block sm:inline"></strong></div>
                     <div id="slip-custom-fields-list" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200/80 hidden"></div>
                     <div><span class="text-slate-500">সেবার ধরন:</span> <strong id="slip-service" class="text-slate-900 block sm:inline"></strong></div>
@@ -470,7 +494,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="টোকেন নম্বর, নাম, পিতা/স্বামী/মাতার নাম, ১২ ডিজিটের আধার নম্বর, মোবাইল নম্বর, ঠিকানা বা অতিরিক্ত তথ্য দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs outline-none">
+                        <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="টোকেন নম্বর, নাম, পিতা/স্বামী/মাতার নাম, আধার নম্বর, মোবাইল নম্বর, ঠিকানা বা অতিরিক্ত তথ্য দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs outline-none">
                     </div>
 
                     <div id="date-wise-summary-bar" class="flex flex-wrap gap-1.5 text-[11px]"></div>
@@ -482,7 +506,7 @@
                                     <th class="p-3">টোকেন নম্বর</th>
                                     <th class="p-3">নাম</th>
                                     <th class="p-3">পিতা/স্বামী/মাতার নাম</th>
-                                    <th class="p-3">আধার নম্বর (১২ ডিজিট)</th>
+                                    <th class="p-3">আধার নম্বর</th>
                                     <th class="p-3">মোবাইল নম্বর</th>
                                     <th class="p-3">ঠিকানা</th>
                                     <th class="p-3">অতিরিক্ত তথ্য</th>
@@ -569,7 +593,7 @@
                 <!-- ৩. ইনফো ও নোটিশ এডিটর ট্যাব -->
                 <div id="admin-tab-info" class="hidden space-y-4">
                     <div class="space-y-3">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">অফিসের নাম *</label>
                                 <input type="text" id="edit-office-name" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs outline-none">
@@ -577,7 +601,29 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">দৈনিক স্লট বুকিং লিমিট (১০:৩০ AM – ০৪:৩০ PM) *</label>
                                 <input type="number" id="edit-daily-slot-limit" min="1" max="200" step="1" class="w-full px-3.5 py-2 rounded-xl border border-teal-400 bg-teal-50/40 font-bold text-teal-950 text-xs outline-none">
-                                <span class="text-[10px] text-teal-800 block mt-0.5">যেমন ৩০ দিলে সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ৩০টি সময় স্বয়ংক্রিয়ভাবে তৈরি হবে।</span>
+                                <span class="text-[10px] text-teal-800 block mt-0.5">যেমন ৩০ দিলে ১০:৩০ থেকে ০৪:৩০-এর মধ্যে ৩০টি স্লট তৈরি হবে।</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">আধার নম্বরের ডিজিট সংখ্যা সিলেক্ট করুন *</label>
+                                <select id="edit-aadhaar-digit-length" class="w-full px-3.5 py-2 rounded-xl border border-teal-400 bg-teal-50/40 font-bold text-teal-950 text-xs outline-none">
+                                    <option value="12">১২ ডিজিট (12 Digits - Default)</option>
+                                    <option value="10">১০ ডিজিট (10 Digits)</option>
+                                    <option value="8">৮ ডিজিট (8 Digits)</option>
+                                    <option value="6">৬ ডিজিট (6 Digits)</option>
+                                    <option value="4">৪ ডিজিট (4 Digits)</option>
+                                </select>
+                                <span class="text-[10px] text-teal-800 block mt-0.5">আধার আপডেট ও শিশুর বাবা/মায়ের আধারের ডিজিট।</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">মোবাইল নম্বরের ডিজিট সংখ্যা সিলেক্ট করুন *</label>
+                                <select id="edit-mobile-digit-length" class="w-full px-3.5 py-2 rounded-xl border border-emerald-400 bg-emerald-50/40 font-bold text-emerald-950 text-xs outline-none">
+                                    <option value="10">১০ ডিজিট (10 Digits - Default)</option>
+                                    <option value="11">১১ ডিজিট (11 Digits)</option>
+                                    <option value="12">১২ ডিজিট (12 Digits)</option>
+                                    <option value="8">৮ ডিজিট (8 Digits)</option>
+                                    <option value="6">৬ ডিজিট (6 Digits)</option>
+                                </select>
+                                <span class="text-[10px] text-emerald-800 block mt-0.5">ফর্মে মোবাইল নম্বর কত ডিজিট দিতে হবে তা সিলেক্ট করুন।</span>
                             </div>
                         </div>
                         <div>
@@ -620,7 +666,7 @@
                             <input type="text" id="edit-notice-3" placeholder="নোটিশ ৩" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs outline-none">
                         </div>
                         <button type="button" onclick="savePortalInfoEdits()" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">
-                            ইনফো, স্লট লিমিট ও বুকিং তথ্য সেভ করুন
+                            ইনফো, আধার ও মোবাইল ডিজিট, স্লট লিমিট ও বুকিং তথ্য সেভ করুন
                         </button>
                     </div>
                 </div>
@@ -780,11 +826,9 @@
             measurementId: "G-731GGW6DJ4"
         };
 
-        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v21';
-        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v21';
+        const LOCAL_CFG_KEY = 'cdpo_amarpur_portal_v23';
+        const LOCAL_BOOKINGS_KEY = 'cdpo_amarpur_bookings_v23';
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'cdpo-amarpur-portal';
-
-        const AADHAAR_12_LABEL = "আধার নম্বর (যদি শিশুর নতুন এনরোলমেন্ট হয়, তবে বাবা বা মায়ের আধার কার্ডের আধার নাম্বার )";
 
         const standardFieldDefinitions = [
             {
@@ -804,18 +848,10 @@
                 fullWidth: false
             },
             {
-                key: 'idLast4',
-                inputId: 'book-id-last4',
-                label: AADHAAR_12_LABEL,
-                placeholder: '১২ সংখ্যার আধার নম্বর লিখুন (সর্বোচ্চ ১২ ডিজিট)',
-                type: 'id12',
-                fullWidth: false
-            },
-            {
                 key: 'phone',
                 inputId: 'book-phone',
-                label: 'মোবাইল / হোয়াটসঅ্যাপ নম্বর (১০ ডিজিট)',
-                placeholder: '১০ সংখ্যার মোবাইল নম্বর লিখুন',
+                label: 'মোবাইল / হোয়াটসঅ্যাপ নম্বর',
+                placeholder: 'মোবাইল নম্বর লিখুন',
                 type: 'tel',
                 fullWidth: false
             },
@@ -825,7 +861,7 @@
                 label: 'ঠিকানা (গ্রাম / ওয়ার্ড / এলাকা ও পিনকোড)',
                 placeholder: 'যেমন: অমরপুর, গোমতী জেলা, ত্রিপুরা - ৭৯৯১০১',
                 type: 'text',
-                fullWidth: true
+                fullWidth: false
             }
         ];
 
@@ -838,8 +874,8 @@
             return String(val || '').replace(/[^0-9]/g, '').slice(0, maxLen);
         }
 
-        function formatAadhaar12Display(rawVal) {
-            const digits = sanitizeDigitsOnly(rawVal, 12);
+        function formatConfiguredAadhaarDisplay(rawVal, digitLen) {
+            const digits = sanitizeDigitsOnly(rawVal, digitLen);
             if (!digits) return "";
             if (digits.length === 12) {
                 return `${digits.slice(0, 4)}-${digits.slice(4, 8)}-${digits.slice(8, 12)}`;
@@ -1008,10 +1044,12 @@
             officeAddress: "অমরপুর, গোমতী জেলা, ত্রিপুরা (Amarpur, Gomati District, Tripura)",
             phone: "7628852177",
             dailySlotLimit: 20,
+            aadhaarDigitLength: 12,
+            mobileDigitLength: 10,
             bookingIntroText: "বুকিং করার সাথে সাথেই আপনার তথ্য অটোমেটিক ক্লাউড স্টোরেজে সংরক্ষিত হবে এবং অফিসিয়াল পিডিএফ স্লিপ জেনারেট হবে।",
             bookingExtraInfo: "",
             bookingFooterInfo: "",
-            slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একই আধার নম্বর ও একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।",
+            slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।",
             pin: "31121999",
             securityQuestion: "তোমার প্রিয় মানুষটার নাম কি?",
             securityAnswer: "Sangita",
@@ -1030,7 +1068,7 @@
             customSections: [],
             customHolidays: [],
             customBookingFields: [],
-            hiddenStandardFields: [],
+            hiddenStandardFields: ['idLast4'],
             uidaiDocsData: JSON.parse(JSON.stringify(defaultUidaiDocsData))
         };
 
@@ -1047,6 +1085,104 @@
             const parsed = parseInt(portalConfig.dailySlotLimit, 10);
             if (!Number.isFinite(parsed) || parsed < 1) return 20;
             return Math.min(parsed, 200);
+        }
+
+        function getConfiguredAadhaarDigits() {
+            const parsed = parseInt(portalConfig.aadhaarDigitLength, 10);
+            if (!Number.isFinite(parsed) || parsed < 4 || parsed > 12) return 12;
+            return parsed;
+        }
+
+        function getConfiguredMobileDigits() {
+            const parsed = parseInt(portalConfig.mobileDigitLength, 10);
+            if (!Number.isFinite(parsed) || parsed < 6 || parsed > 15) return 10;
+            return parsed;
+        }
+
+        function isChildEnrollmentService(serviceVal) {
+            const s = String(serviceVal || '').toLowerCase();
+            return s.includes('শিশু') || s.includes('নতুন এনরোলমেন্ট') || s.includes('0-5') || s.includes('০-৫');
+        }
+
+        function handleConfiguredAadhaarInput(inputEl) {
+            if (!inputEl) return;
+            const maxLen = getConfiguredAadhaarDigits();
+            inputEl.maxLength = maxLen;
+            inputEl.minLength = maxLen;
+            const cleaned = sanitizeDigitsOnly(inputEl.value, maxLen);
+            if (inputEl.value !== cleaned) {
+                inputEl.value = cleaned;
+            }
+        }
+
+        function syncAadhaarInputsWithService() {
+            const serviceVal = document.getElementById('book-service')?.value || "";
+            const isChild = isChildEnrollmentService(serviceVal);
+            const digits = getConfiguredAadhaarDigits();
+            const digitsBn = toBengaliNumber(digits);
+
+            const updateWrap = document.getElementById('update-aadhaar-field-wrap');
+            const updateInput = document.getElementById('book-aadhaar-12');
+            const updateLabel = document.getElementById('update-aadhaar-label');
+            const updateHelper = document.getElementById('update-aadhaar-helper');
+
+            const childWrap = document.getElementById('child-parent-aadhaar-wrap');
+            const childInput = document.getElementById('book-child-parent-aadhaar');
+            const childLabel = document.getElementById('child-parent-aadhaar-label');
+            const childHelper = document.getElementById('child-parent-aadhaar-helper');
+
+            if (updateInput) {
+                updateInput.maxLength = digits;
+                updateInput.minLength = digits;
+                updateInput.pattern = `[0-9]{${digits}}`;
+                updateInput.placeholder = `${digitsBn} সংখ্যার আধার নম্বর লিখুন`;
+            }
+            if (updateLabel) {
+                updateLabel.innerHTML = `আধার নম্বর (${digitsBn} ডিজিট) <span class="text-rose-600 font-extrabold">*</span>`;
+            }
+            if (updateHelper) {
+                updateHelper.textContent = `• বায়োমেট্রিক আপডেট ও ডেমোগ্রাফিক আপডেট সিলেক্ট করলে ${digitsBn} ডিজিটের আধার নম্বর বাধ্যতামূলক • একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।`;
+            }
+
+            if (childInput) {
+                childInput.maxLength = digits;
+                childInput.minLength = digits;
+                childInput.pattern = `[0-9]{${digits}}`;
+                childInput.placeholder = `বাবা বা মায়ের ${digitsBn} সংখ্যার আধার নম্বর লিখুন`;
+            }
+            if (childLabel) {
+                childLabel.innerHTML = `শিশুর নতুন আধার কার্ড এনরোল্ড করতে বাবা বা মায়ের আধার নম্বর (${digitsBn} ডিজিট) <span class="text-rose-600 font-extrabold">*</span>`;
+            }
+            if (childHelper) {
+                childHelper.textContent = `• শিশুদের নতুন আধার (০-৫ বছর) এনরোলমেন্টের জন্য বাবা বা মায়ের ${digitsBn} ডিজিটের আধার নম্বর আবশ্যক • একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।`;
+            }
+
+            if (isChild) {
+                if (updateWrap) updateWrap.classList.add('hidden');
+                if (updateInput) {
+                    updateInput.required = false;
+                    updateInput.value = "";
+                }
+                if (childWrap) childWrap.classList.remove('hidden');
+                if (childInput) {
+                    childInput.required = true;
+                }
+            } else {
+                if (updateWrap) updateWrap.classList.remove('hidden');
+                if (updateInput) {
+                    updateInput.required = true;
+                }
+                if (childWrap) childWrap.classList.add('hidden');
+                if (childInput) {
+                    childInput.required = false;
+                    childInput.value = "";
+                }
+            }
+        }
+
+        function handleServiceTypeChange() {
+            syncAadhaarInputsWithService();
+            updateBookingDocPreview();
         }
 
         function getHiddenStandardFields() {
@@ -1074,6 +1210,9 @@
                 savedVals[inp.id] = inp.value;
             });
 
+            const mobileDigits = getConfiguredMobileDigits();
+            const mobileDigitsBn = toBengaliNumber(mobileDigits);
+
             const visibleDefs = standardFieldDefinitions.filter(f => isStandardFieldVisible(f.key));
             if (visibleDefs.length === 0) {
                 container.innerHTML = `<p class="text-xs text-amber-800 bg-amber-50 border border-amber-200 p-3 rounded-xl">সব পুরনো ফর্ম ফিল্ড বর্তমানে লুকানো/ডিলিট করা আছে। প্রয়োজনে অ্যাডমিন প্যানেলের "ফর্ম ফিল্ডস" ট্যাব থেকে রিস্টোর বা নতুন ফিল্ড যোগ করুন।</p>`;
@@ -1088,18 +1227,19 @@
                 html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">` + paired.map(f => {
                     const isLast = paired.length % 2 === 1 && f === paired[paired.length - 1];
                     const isPhone = f.type === 'tel';
-                    const isId12 = f.type === 'id12';
                     const attrs = isPhone
-                        ? 'pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" oninput="handleDigitLimitInput(this, 10)"'
-                        : (isId12 ? 'pattern="[0-9]{12}" maxlength="12" minlength="12" inputmode="numeric" oninput="handleDigitLimitInput(this, 12)"' : '');
-                    const inpType = (isPhone || isId12) ? 'tel' : 'text';
+                        ? `pattern="[0-9]{${mobileDigits}}" maxlength="${mobileDigits}" minlength="${mobileDigits}" inputmode="numeric" oninput="handleDigitLimitInput(this, ${mobileDigits})"`
+                        : '';
+                    const inpType = isPhone ? 'tel' : 'text';
+                    const lblText = isPhone ? `${f.label} (${mobileDigitsBn} ডিজিট)` : f.label;
+                    const phText = isPhone ? `${mobileDigitsBn} সংখ্যার মোবাইল নম্বর লিখুন` : f.placeholder;
                     const helperTxt = isPhone
-                        ? '<span class="text-[10px] text-slate-500 block mt-1">• ১০ সংখ্যার মোবাইল নম্বর (একই মোবাইল নম্বর দিয়ে একাধিক বুকিং করা যাবে না)</span>'
-                        : (isId12 ? '<span class="text-[10px] text-teal-700 font-semibold block mt-1">• ১২ ডিজিটের বেশি বসবে না • একই আধার নম্বর দিয়ে একাধিক বুকিং করা যাবে না</span>' : '');
+                        ? `<span class="text-[10px] text-slate-500 block mt-1">• ${mobileDigitsBn} সংখ্যার মোবাইল নম্বর</span>`
+                        : '';
                     return `
                         <div class="${isLast ? 'sm:col-span-2' : ''}">
-                            <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(f.label)} <span class="text-rose-600 font-extrabold">*</span></label>
-                            <input type="${inpType}" id="${f.inputId}" required ${attrs} placeholder="${escapeHTML(f.placeholder)}" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
+                            <label for="${f.inputId}" class="block text-xs font-bold text-slate-700 mb-1.5 leading-snug">${escapeHTML(lblText)} <span class="text-rose-600 font-extrabold">*</span></label>
+                            <input type="${inpType}" id="${f.inputId}" required ${attrs} placeholder="${escapeHTML(phText)}" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-600 outline-none text-sm">
                             ${helperTxt}
                         </div>
                     `;
@@ -1204,6 +1344,7 @@
                 return;
             }
 
+            const mobileDigits = getConfiguredMobileDigits();
             container.classList.remove('hidden');
             container.innerHTML = fields.map(field => {
                 const inputId = `custom-field-${escapeHTML(field.id)}`;
@@ -1226,7 +1367,7 @@
                 }
 
                 const inputType = ['text', 'number', 'tel', 'email', 'date'].includes(field.type) ? field.type : 'text';
-                const extraAttrs = inputType === 'tel' ? 'pattern="[0-9]{10}" maxlength="10" inputmode="numeric" oninput="handleDigitLimitInput(this, 10)"' : '';
+                const extraAttrs = inputType === 'tel' ? `pattern="[0-9]{${mobileDigits}}" maxlength="${mobileDigits}" inputmode="numeric" oninput="handleDigitLimitInput(this, ${mobileDigits})"` : '';
 
                 return `
                     <div>
@@ -1343,13 +1484,13 @@
 
         function loadLocalCache() {
             try {
-                const c = localStorage.getItem(LOCAL_CFG_KEY) || localStorage.getItem('cdpo_amarpur_portal_v20');
+                const c = localStorage.getItem(LOCAL_CFG_KEY) || localStorage.getItem('cdpo_amarpur_portal_v22') || localStorage.getItem('cdpo_amarpur_portal_v21') || localStorage.getItem('cdpo_amarpur_portal_v20');
                 if (c) portalConfig = { ...defaultPortalConfig, ...JSON.parse(c) };
                 if (!portalConfig.uidaiDocsData) portalConfig.uidaiDocsData = JSON.parse(JSON.stringify(defaultUidaiDocsData));
                 if (!portalConfig.customHolidays) portalConfig.customHolidays = [];
                 if (!Array.isArray(portalConfig.customBookingFields)) portalConfig.customBookingFields = [];
-                if (!Array.isArray(portalConfig.hiddenStandardFields)) portalConfig.hiddenStandardFields = [];
-                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v20') || localStorage.getItem('cdpo_amarpur_bookings_v19') || localStorage.getItem('cdpo_amarpur_bookings_v18');
+                if (!Array.isArray(portalConfig.hiddenStandardFields)) portalConfig.hiddenStandardFields = ['idLast4'];
+                const b = localStorage.getItem(LOCAL_BOOKINGS_KEY) || localStorage.getItem('cdpo_amarpur_bookings_v22') || localStorage.getItem('cdpo_amarpur_bookings_v21') || localStorage.getItem('cdpo_amarpur_bookings_v20') || localStorage.getItem('cdpo_amarpur_bookings_v19') || localStorage.getItem('cdpo_amarpur_bookings_v18');
                 if (b) {
                     const parsedBookings = JSON.parse(b);
                     bookingRecords = cleanOldBookings(parsedBookings);
@@ -1419,6 +1560,8 @@
                             ...defaultPortalConfig,
                             ...cloudData,
                             dailySlotLimit: cloudData.dailySlotLimit !== undefined ? cloudData.dailySlotLimit : defaultPortalConfig.dailySlotLimit,
+                            aadhaarDigitLength: cloudData.aadhaarDigitLength !== undefined ? cloudData.aadhaarDigitLength : defaultPortalConfig.aadhaarDigitLength,
+                            mobileDigitLength: cloudData.mobileDigitLength !== undefined ? cloudData.mobileDigitLength : defaultPortalConfig.mobileDigitLength,
                             bookingIntroText: cloudData.bookingIntroText !== undefined ? cloudData.bookingIntroText : defaultPortalConfig.bookingIntroText,
                             bookingExtraInfo: cloudData.bookingExtraInfo !== undefined ? cloudData.bookingExtraInfo : "",
                             bookingFooterInfo: cloudData.bookingFooterInfo !== undefined ? cloudData.bookingFooterInfo : "",
@@ -1427,7 +1570,7 @@
                             securityAnswer: cloudData.securityAnswer ? String(cloudData.securityAnswer) : defaultPortalConfig.securityAnswer,
                             customHolidays: Array.isArray(cloudData.customHolidays) ? cloudData.customHolidays : [],
                             customBookingFields: Array.isArray(cloudData.customBookingFields) ? cloudData.customBookingFields : [],
-                            hiddenStandardFields: Array.isArray(cloudData.hiddenStandardFields) ? cloudData.hiddenStandardFields : [],
+                            hiddenStandardFields: Array.isArray(cloudData.hiddenStandardFields) ? cloudData.hiddenStandardFields : ['idLast4'],
                             uidaiDocsData: cloudData.uidaiDocsData ? { ...defaultUidaiDocsData, ...cloudData.uidaiDocsData } : JSON.parse(JSON.stringify(defaultUidaiDocsData))
                         };
                         saveLocalCache();
@@ -1624,7 +1767,7 @@
             const selectEl = document.getElementById('book-service');
             if (selectEl && data) {
                 selectEl.value = data.title;
-                updateBookingDocPreview();
+                handleServiceTypeChange();
             }
         }
 
@@ -1679,6 +1822,10 @@
 
             const limit = getEffectiveDailyLimit();
             const limitBn = toBengaliNumber(limit);
+            const mobileDigitsBn = toBengaliNumber(getConfiguredMobileDigits());
+            const slipPhoneLbl = document.getElementById('slip-phone-label-text');
+            if (slipPhoneLbl) slipPhoneLbl.textContent = `মোবাইল নম্বর (${mobileDigitsBn} ডিজিট):`;
+
             const headerBadge = document.getElementById('booking-header-limit-badge');
             if (headerBadge) {
                 headerBadge.textContent = `অনলাইন স্লট বুকিং (আগামী ১৬ দিন • দৈনিক ${limitBn} স্লট • ১০:৩০–০৪:৩০)`;
@@ -1705,7 +1852,7 @@
             }
             const ruleNoteEl = document.getElementById('slot-availability-hint');
             if (ruleNoteEl) {
-                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একই আধার নম্বর ও একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।`;
+                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।`;
             }
 
             rebuildSlotOptions();
@@ -1732,6 +1879,8 @@
                     serviceSelect.value = currentVal;
                 }
             }
+
+            syncAadhaarInputsWithService();
 
             renderNoticeSlide();
             startNoticeAutoSlide();
@@ -1901,22 +2050,34 @@
 
             if (!validateBookingDate()) return;
 
+            const requiredMobileDigits = getConfiguredMobileDigits();
+            const requiredMobileDigitsBn = toBengaliNumber(requiredMobileDigits);
+
             const date = document.getElementById('book-date').value;
             const nameEl = document.getElementById('book-name');
             const phoneEl = document.getElementById('book-phone');
             const addressEl = document.getElementById('book-address');
             const parentEl = document.getElementById('book-parent-guardian-name');
-            const id12El = document.getElementById('book-id-last4');
 
             const name = nameEl ? nameEl.value.trim() : "";
-            const phone = phoneEl ? sanitizeDigitsOnly(phoneEl.value, 10) : "";
+            const phone = phoneEl ? sanitizeDigitsOnly(phoneEl.value, requiredMobileDigits) : "";
             const address = addressEl ? addressEl.value.trim() : "";
             const parentGuardianName = parentEl ? parentEl.value.trim() : "";
-            const rawId12 = id12El ? sanitizeDigitsOnly(id12El.value, 12) : "";
             const service = document.getElementById('book-service').value;
             const slot = document.getElementById('book-slot').value;
             const serviceInfo = getServiceInfoByValue(service);
             const serviceFee = serviceInfo.fee;
+
+            const isChild = isChildEnrollmentService(service);
+            const requiredDigits = getConfiguredAadhaarDigits();
+            const requiredDigitsBn = toBengaliNumber(requiredDigits);
+
+            const updateAadhaarEl = document.getElementById('book-aadhaar-12');
+            const childParentAadhaarEl = document.getElementById('book-child-parent-aadhaar');
+
+            const activeAadhaarRaw = isChild
+                ? sanitizeDigitsOnly(childParentAadhaarEl?.value || "", requiredDigits)
+                : sanitizeDigitsOnly(updateAadhaarEl?.value || "", requiredDigits);
 
             const customFieldValues = [];
             document.querySelectorAll('.dynamic-booking-input').forEach(inp => {
@@ -1927,33 +2088,29 @@
                 }
             });
 
-            if (phoneEl && !/^[0-9]{10}$/.test(phone)) {
-                showBookingErrorNotice("মোবাইল নম্বর অবশ্যই ঠিক ১০ সংখ্যার হতে হবে (১০টির কম বা বেশি গ্রহণযোগ্য নয়)।");
-                return;
-            }
-            if (id12El && !/^[0-9]{12}$/.test(rawId12)) {
-                showBookingErrorNotice("আধার নম্বর অবশ্যই ঠিক ১২ সংখ্যার হতে হবে (১২টির কম বা বেশি গ্রহণযোগ্য নয়)।");
+            if (phoneEl && phone.length !== requiredMobileDigits) {
+                showBookingErrorNotice(`মোবাইল নম্বর অবশ্যই ঠিক ${requiredMobileDigitsBn} সংখ্যার হতে হবে।`);
                 return;
             }
 
-            if (rawId12) {
-                const existingAadhaarBooking = bookingRecords.find(b => {
-                    const storedFullId = sanitizeDigitsOnly(b.idFull12 || "", 12);
-                    return storedFullId && storedFullId === rawId12;
-                });
-                if (existingAadhaarBooking) {
-                    showBookingErrorNotice("এই আধার নম্বর দিয়ে ইতিমধ্যেই একটি অ্যাপয়েন্টমেন্ট বুক করা আছে। একই আধার নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।");
-                    return;
+            if (activeAadhaarRaw.length !== requiredDigits) {
+                if (isChild) {
+                    showBookingErrorNotice(`শিশুর নতুন আধার কার্ড এনরোল্ড করতে বাবা বা মায়ের ঠিক ${requiredDigitsBn} সংখ্যার আধার নম্বর বাধ্যতামূলক।`);
+                } else {
+                    showBookingErrorNotice(`আপডেট (বায়োমেট্রিক আপডেট ও ডেমোগ্রাফিক আপডেট) সিলেক্ট করলে ঠিক ${requiredDigitsBn} সংখ্যার আধার নম্বর বাধ্যতামূলক।`);
                 }
+                return;
             }
 
-            if (phone) {
-                const existingPhoneBooking = bookingRecords.find(b => {
-                    const storedPhone = sanitizeDigitsOnly(b.phone || "", 10);
-                    return storedPhone && storedPhone === phone;
-                });
-                if (existingPhoneBooking) {
-                    showBookingErrorNotice("এই মোবাইল নম্বর দিয়ে ইতিমধ্যেই একটি অ্যাপয়েন্টমেন্ট বুক করা আছে। একই মোবাইল নম্বর দিয়ে একাধিক অ্যাপয়েন্টমেন্ট বুক করা যাবে না।");
+            if (activeAadhaarRaw) {
+                const sameDaySameAadhaarCount = bookingRecords.filter(b => {
+                    if (b.date !== date) return false;
+                    const storedAadhaar = sanitizeDigitsOnly(b.aadhaarNumber || b.idFull12 || "", 12);
+                    return storedAadhaar && storedAadhaar === activeAadhaarRaw;
+                }).length;
+
+                if (sameDaySameAadhaarCount >= 2) {
+                    showBookingErrorNotice(`এই আধার নম্বর দিয়ে ${date} তারিখে ইতিমধ্যেই ২টি অ্যাপয়েন্টমেন্ট বুক করা হয়েছে! একটি আধার নম্বর দিয়ে একদিনে ২টির বেশি আধার অ্যাপয়েন্টমেন্ট বুক করা যাবে না।`);
                     return;
                 }
             }
@@ -1974,15 +2131,21 @@
 
             const token = generateUniqueToken();
             lastGeneratedToken = token;
-            const formattedId12 = formatAadhaar12Display(rawId12);
-            const last4Only = rawId12.slice(-4);
+            const formattedAadhaar = formatConfiguredAadhaarDisplay(activeAadhaarRaw, requiredDigits);
+            const aadhaarLabelBn = isChild
+                ? `বাবা বা মায়ের আধার নম্বর (${requiredDigitsBn} ডিজিট):`
+                : `আধার নম্বর (${requiredDigitsBn} ডিজিট):`;
 
             const newBooking = {
                 token: token,
                 name: name,
                 parentGuardianName: parentGuardianName,
-                idLast4: last4Only,
-                idFull12: rawId12,
+                aadhaarNumber: activeAadhaarRaw,
+                aadhaarDigits: requiredDigits,
+                mobileDigits: requiredMobileDigits,
+                isChildEnrollment: isChild,
+                idLast4: activeAadhaarRaw.slice(-4),
+                idFull12: activeAadhaarRaw,
                 phone: phone,
                 address: address,
                 customFields: customFieldValues,
@@ -2006,14 +2169,16 @@
 
             if (rowName) rowName.classList.toggle('hidden', !name);
             if (rowParent) rowParent.classList.toggle('hidden', !parentGuardianName);
-            if (rowLast4) rowLast4.classList.toggle('hidden', !formattedId12);
+            if (rowLast4) rowLast4.classList.toggle('hidden', !formattedAadhaar);
             if (rowPhone) rowPhone.classList.toggle('hidden', !phone);
             if (rowAddress) rowAddress.classList.toggle('hidden', !address);
 
             document.getElementById('slip-token').textContent = "#" + token;
             document.getElementById('slip-name').textContent = name;
             document.getElementById('slip-parent-guardian-name').textContent = parentGuardianName;
-            document.getElementById('slip-id-last4').textContent = formattedId12;
+            document.getElementById('slip-aadhaar-label-text').textContent = aadhaarLabelBn;
+            document.getElementById('slip-id-last4').textContent = formattedAadhaar;
+            document.getElementById('slip-phone-label-text').textContent = `মোবাইল নম্বর (${requiredMobileDigitsBn} ডিজিট):`;
             document.getElementById('slip-phone').textContent = phone;
             document.getElementById('slip-address').textContent = address;
             document.getElementById('slip-service').textContent = service;
@@ -2036,7 +2201,7 @@
             const lines = [`*${portalConfig.officeName}*`, `টোকেন নম্বর: #${token}`];
             if (name) lines.push(`নাম: ${name}`);
             if (parentGuardianName) lines.push(`পিতা/স্বামী/মাতার নাম: ${parentGuardianName}`);
-            if (formattedId12) lines.push(`আধার নম্বর (১২ ডিজিট): ${formattedId12}`);
+            if (formattedAadhaar) lines.push(`${aadhaarLabelBn} ${formattedAadhaar}`);
             if (phone) lines.push(`মোবাইল নম্বর: ${phone}`);
             if (address) lines.push(`ঠিকানা: ${address}`);
             customFieldValues.forEach(cf => lines.push(`${cf.label}: ${cf.value}`));
@@ -2101,7 +2266,9 @@
             const token = escapeHTML(document.getElementById('slip-token')?.textContent || "");
             const name = escapeHTML(document.getElementById('slip-name')?.textContent || "");
             const parentGuardianName = escapeHTML(document.getElementById('slip-parent-guardian-name')?.textContent || "");
+            const aadhaarLbl = escapeHTML(document.getElementById('slip-aadhaar-label-text')?.textContent || "আধার নম্বর:");
             const idFormatted = escapeHTML(document.getElementById('slip-id-last4')?.textContent || "");
+            const phoneLbl = escapeHTML(document.getElementById('slip-phone-label-text')?.textContent || "মোবাইল নম্বর:");
             const phone = escapeHTML(document.getElementById('slip-phone')?.textContent || "");
             const address = escapeHTML(document.getElementById('slip-address')?.textContent || "");
             const customHtml = document.getElementById('slip-custom-fields-list')?.innerHTML || "";
@@ -2146,8 +2313,8 @@
                             <div class="details">
                                 ${name ? `<div><strong>নাম:</strong> ${name}</div>` : ''}
                                 ${parentGuardianName ? `<div><strong>পিতা/স্বামী/মাতার নাম:</strong> ${parentGuardianName}</div>` : ''}
-                                ${idFormatted ? `<div><strong>আধার নম্বর (১২ ডিজিট):</strong> ${idFormatted}</div>` : ''}
-                                ${phone ? `<div><strong>মোবাইল নম্বর:</strong> ${phone}</div>` : ''}
+                                ${idFormatted ? `<div><strong>${aadhaarLbl}</strong> ${idFormatted}</div>` : ''}
+                                ${phone ? `<div><strong>${phoneLbl}</strong> ${phone}</div>` : ''}
                                 ${address ? `<div><strong>ঠিকানা:</strong> ${address}</div>` : ''}
                                 ${customHtml ? `<div style="margin-top:6px; padding-top:6px; border-top:1px dashed #cbd5e1;">${customHtml}</div>` : ''}
                                 <div><strong>সেবার ধরন:</strong> ${service}</div>
@@ -2250,6 +2417,8 @@
             if (tab === 'info') {
                 document.getElementById('edit-office-name').value = portalConfig.officeName;
                 document.getElementById('edit-daily-slot-limit').value = getEffectiveDailyLimit();
+                document.getElementById('edit-aadhaar-digit-length').value = String(getConfiguredAadhaarDigits());
+                document.getElementById('edit-mobile-digit-length').value = String(getConfiguredMobileDigits());
                 document.getElementById('edit-office-address').value = portalConfig.officeAddress;
                 document.getElementById('edit-office-phone').value = portalConfig.phone;
                 document.getElementById('edit-booking-intro').value = portalConfig.bookingIntroText || defaultPortalConfig.bookingIntroText;
@@ -2410,15 +2579,13 @@
 
             const filtered = bookingRecords.filter(b => {
                 const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "";
-                const l4 = b.idLast4 || "";
-                const full12 = b.idFull12 || "";
+                const aadhaarVal = b.aadhaarNumber || b.idFull12 || b.idLast4 || "";
                 const customText = Array.isArray(b.customFields)
                     ? b.customFields.map(cf => `${cf.label} ${cf.value}`).join(' ').toLowerCase()
                     : '';
                 const matchesQuery = (b.name || "").toLowerCase().includes(query) ||
                     pgName.toLowerCase().includes(query) ||
-                    l4.toLowerCase().includes(query) ||
-                    full12.toLowerCase().includes(query) ||
+                    aadhaarVal.toLowerCase().includes(query) ||
                     (b.address || "").toLowerCase().includes(query) ||
                     customText.includes(query) ||
                     (b.token || "").toLowerCase().includes(query) ||
@@ -2444,8 +2611,9 @@
 
                 spreadsheetBody.innerHTML = filtered.map(b => {
                     const pgName = b.parentGuardianName || b.fatherHusbandName || b.fatherName || "—";
-                    const idDisplay = b.idFull12
-                        ? escapeHTML(formatAadhaar12Display(b.idFull12))
+                    const rawAadhaar = b.aadhaarNumber || b.idFull12 || "";
+                    const idDisplay = rawAadhaar
+                        ? `<div class="font-semibold text-teal-900">${escapeHTML(formatConfiguredAadhaarDisplay(rawAadhaar, b.aadhaarDigits || rawAadhaar.length))}</div>${b.isChildEnrollment ? '<span class="text-[10px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 font-semibold">বাবা/মায়ের</span>' : ''}`
                         : (b.idLast4 ? `XXXX-XXXX-${escapeHTML(b.idLast4)}` : "—");
                     const addrCol = b.address ? `<div class="text-slate-700 min-w-[150px] max-w-[220px]">${escapeHTML(b.address)}</div>` : "—";
                     const extraCol = Array.isArray(b.customFields) && b.customFields.length > 0
@@ -2456,7 +2624,7 @@
                         <td class="p-3 font-extrabold text-teal-800 whitespace-nowrap">#${escapeHTML(b.token)}</td>
                         <td class="p-3 font-bold text-slate-900 whitespace-nowrap">${escapeHTML(b.name || "—")}</td>
                         <td class="p-3 text-slate-700 whitespace-nowrap">${escapeHTML(pgName)}</td>
-                        <td class="p-3 font-semibold text-teal-900 whitespace-nowrap">${idDisplay}</td>
+                        <td class="p-3 whitespace-nowrap">${idDisplay}</td>
                         <td class="p-3 text-slate-700 whitespace-nowrap">${escapeHTML(b.phone || "—")}</td>
                         <td class="p-3 text-slate-700">${addrCol}</td>
                         <td class="p-3 text-slate-700">${extraCol}</td>
@@ -2632,6 +2800,8 @@
             if (!isAdminAuthenticated) return;
             const name = document.getElementById('edit-office-name').value.trim();
             const rawLimit = parseInt(document.getElementById('edit-daily-slot-limit').value, 10);
+            const rawDigits = parseInt(document.getElementById('edit-aadhaar-digit-length').value, 10);
+            const rawMobileDigits = parseInt(document.getElementById('edit-mobile-digit-length').value, 10);
             const address = document.getElementById('edit-office-address').value.trim();
             const phone = document.getElementById('edit-office-phone').value.trim();
             const bookingIntro = document.getElementById('edit-booking-intro').value.trim();
@@ -2652,8 +2822,13 @@
                 return;
             }
 
+            const validDigits = [4, 6, 8, 10, 12].includes(rawDigits) ? rawDigits : 12;
+            const validMobileDigits = [6, 8, 10, 11, 12].includes(rawMobileDigits) ? rawMobileDigits : 10;
+
             portalConfig.officeName = name;
             portalConfig.dailySlotLimit = rawLimit;
+            portalConfig.aadhaarDigitLength = validDigits;
+            portalConfig.mobileDigitLength = validMobileDigits;
             portalConfig.officeAddress = address;
             portalConfig.phone = phone;
             portalConfig.bookingIntroText = bookingIntro || defaultPortalConfig.bookingIntroText;
@@ -2667,7 +2842,7 @@
             await persistConfig();
             renderPortal();
             updateSlotAvailability();
-            showToast(`✅ ${toBengaliNumber(rawLimit)}টি স্লটের সময় (১০:৩০–০৪:৩০) অটোমেটিক তৈরি ও সেভ হয়েছে!`);
+            showToast(`✅ আধার ${toBengaliNumber(validDigits)} ও মোবাইল ${toBengaliNumber(validMobileDigits)} ডিজিট সেভ হয়েছে!`);
         }
 
         async function addNewCustomLink() {
@@ -2858,6 +3033,8 @@
             resetForgottenPassword,
             switchAdminTab,
             handleDigitLimitInput,
+            handleConfiguredAadhaarInput,
+            handleServiceTypeChange,
             toggleFieldOptionsInput,
             addCustomBookingField,
             deleteCustomBookingField,
