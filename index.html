@@ -8,7 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Sans+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -706,8 +705,8 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs sm:text-sm font-bold text-slate-950 mb-1">ফাইল নির্বাচন করুন (PDF, ZIP, DOC, ছবি ইত্যাদি) *</label>
-                            <input type="file" id="vault-file-input" accept=".pdf,.zip,.rar,.7z,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg" class="w-full px-3 py-2 rounded-xl bg-white text-xs sm:text-sm outline-none">
+                            <label class="block text-xs sm:text-sm font-bold text-slate-950 mb-1">ফাইল নির্বাচন করুন (PDF, ZIP, ভিডিও MP4, ছবি ইত্যাদি) *</label>
+                            <input type="file" id="vault-file-input" accept=".pdf,.zip,.rar,.7z,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg,.mp4,.webm,.mov,.mkv,video/*" class="w-full px-3 py-2 rounded-xl bg-white text-xs sm:text-sm outline-none">
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-bold text-slate-950 mb-1">ফাইলের কাস্টম নাম বা নোট (ঐচ্ছিক)</label>
@@ -786,13 +785,13 @@
                 </div>
             </div>
 
-            <!-- পাসওয়ার্ড এন্ট্রি বক্স -->
+            <!-- অ্যাডমিন লগইন বক্স -->
             <div id="admin-auth-box" class="space-y-4">
                 <div class="bg-teal-50 border border-teal-400 rounded-2xl p-4 text-sm text-slate-950 flex items-start gap-2.5">
-                    <i class="fas fa-shield-alt text-teal-900 text-base mt-0.5"></i>
+                    <i class="fas fa-shield-halved text-teal-900 text-base mt-0.5 shrink-0"></i>
                     <div>
-                        <p class="font-bold text-teal-950">সুরক্ষিত অ্যাডমিন প্যানেল (Secure Admin Panel)</p>
-                        <p class="font-medium mt-0.5">বুকিং তালিকা দেখতে বা পোর্টাল সেটিংস পরিবর্তন করতে সঠিক অ্যাডমিন পাসওয়ার্ড (PIN) দিন।</p>
+                        <p class="font-bold text-teal-950">সুরক্ষিত অ্যাডমিন প্যানেল</p>
+                        <p class="font-medium mt-0.5">বুকিং চেকলিস্ট, কাস্টম ফিল্ড ও পোর্টাল সেটিংস পরিবর্তন করতে অ্যাডমিন পাসওয়ার্ড দিন।</p>
                     </div>
                 </div>
                 <input type="password" id="admin-pin-input" autocomplete="off" onkeydown="if(event.key==='Enter') verifyAdminPin()" placeholder="পাসওয়ার্ড (PIN) লিখুন" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-teal-800 outline-none text-sm">
@@ -1839,6 +1838,7 @@
         let noticeSlideTimer = null;
         let lastSlipText = "";
         let lastGeneratedToken = "AMP-101";
+        let currentActiveSlipRecord = null;
 
         function getEffectiveDailyLimit() {
             const parsed = parseInt(portalConfig.dailySlotLimit, 10);
@@ -2137,10 +2137,6 @@
             const mobileDigitsBn = toBengaliNumber(mobileDigits);
 
             const visibleDefs = standardFieldDefinitions.filter(f => isStandardFieldVisible(f.key));
-            if (visibleDefs.length === 0) {
-                container.innerHTML = `<p class="text-sm text-amber-950 bg-[#fffbeb] border border-amber-400 p-3.5 rounded-xl font-semibold">সব পুরনো ফর্ম ফিল্ড বর্তমানে লুকানো/ডিলিট করা আছে। প্রয়োজনে অ্যাডমিন প্যানেলের "ফর্ম ফিল্ডস" ট্যাব থেকে রিস্টোর বা নতুন ফিল্ড যোগ করুন।</p>`;
-                return;
-            }
 
             const paired = visibleDefs.filter(f => !f.fullWidth);
             const fullWidth = visibleDefs.filter(f => f.fullWidth);
@@ -2653,9 +2649,9 @@
 
                 fileInput.value = "";
                 if (labelInput) labelInput.value = "";
-                showToast(`🔒 "${entry.title}" ফাইলটি লকারের ভেতরে লক করে রাখা হয়েছে!`);
+                showToast("✅ ফাইলটি সফলভাবে লকারের ভেতরে সেভ হয়েছে!");
             } catch (err) {
-                showToast("⚠️ ফাইলটি লক করতে সমস্যা হয়েছে।");
+                showToast("⚠️ ফাইল সেভ করতে সমস্যা হয়েছে।");
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -2668,24 +2664,56 @@
             if (!isVaultUnlocked) return;
             const item = (fileVaultState.lockedFiles || []).find(f => f.id === fileId);
             if (!item || !item.dataUrl) {
-                showToast("⚠️ এই ফাইলটির ডাটা পাওয়া যায়নি বা খুব বড় হওয়ায় ক্লাউডে সিঙ্ক হয়নি।");
+                showToast("⚠️ ফাইলটি পাওয়া যায়নি বা ডাটা অসম্পূর্ণ।");
                 return;
             }
             const a = document.createElement('a');
             a.href = item.dataUrl;
-            a.download = item.fileName || item.title || 'locked_file';
+            a.download = item.fileName || `${item.title || 'vault_file'}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast(`⬇️ "${item.fileName}" ডাউনলোড শুরু হয়েছে।`);
+            showToast("✅ ফাইল ডাউনলোড শুরু হয়েছে!");
         }
 
         async function deleteVaultFile(fileId) {
             if (!isVaultUnlocked) return;
             fileVaultState.lockedFiles = (fileVaultState.lockedFiles || []).filter(f => f.id !== fileId);
+            closeVaultMediaPreview();
             await syncVaultToCloud();
             renderVaultFilesList();
-            showToast("লকার থেকে ফাইলটি মুছে ফেলা হয়েছে।");
+            showToast("ফাইলটি লকার থেকে মুছে ফেলা হয়েছে।");
+        }
+
+        function previewVaultMedia(fileId) {
+            if (!isVaultUnlocked) return;
+            const item = (fileVaultState.lockedFiles || []).find(f => f.id === fileId);
+            const box = document.getElementById('vault-media-preview-box');
+            const titleEl = document.getElementById('vault-media-preview-title');
+            const contentEl = document.getElementById('vault-media-preview-content');
+            if (!item || !item.dataUrl || !box || !contentEl) {
+                showToast("⚠️ এই ফাইল বা ভিডিওটির প্রিভিউ ডাটা পাওয়া যায়নি।");
+                return;
+            }
+            if (titleEl) titleEl.textContent = item.title || item.fileName;
+            const isVideo = /\.(mp4|webm|mov|mkv)$/i.test(item.fileName || '') || (item.mimeType || '').startsWith('video/');
+            const isImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(item.fileName || '') || (item.mimeType || '').startsWith('image/');
+            if (isVideo) {
+                contentEl.innerHTML = `<video src="${item.dataUrl}" controls autoplay class="w-full max-h-72 rounded-xl bg-black"></video>`;
+            } else if (isImage) {
+                contentEl.innerHTML = `<img src="${item.dataUrl}" alt="${escapeHTML(item.title)}" class="max-h-72 rounded-xl object-contain">`;
+            } else {
+                contentEl.innerHTML = `<iframe src="${item.dataUrl}" class="w-full h-72 rounded-xl bg-white"></iframe>`;
+            }
+            box.classList.remove('hidden');
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeVaultMediaPreview() {
+            const box = document.getElementById('vault-media-preview-box');
+            const contentEl = document.getElementById('vault-media-preview-content');
+            if (contentEl) contentEl.innerHTML = "";
+            if (box) box.classList.add('hidden');
         }
 
         function renderVaultFilesList() {
@@ -2695,14 +2723,17 @@
 
             const files = Array.isArray(fileVaultState.lockedFiles) ? fileVaultState.lockedFiles : [];
             if (files.length === 0) {
-                listEl.innerHTML = `<p class="text-sm text-slate-900 font-semibold bg-slate-100 p-4 rounded-xl border border-slate-300">লকারে এখনও কোনো PDF, ZIP বা ফাইল লক করা হয়নি। ওপরে ফাইল নির্বাচন করে লক করুন।</p>`;
+                listEl.innerHTML = `<p class="text-sm text-slate-900 font-semibold bg-slate-100 p-4 rounded-xl border border-slate-300">লকারে এখনও কোনো PDF, ZIP বা ভিডিও ফাইল লক করা হয়নি। ওপরে ফাইল নির্বাচন করে লক করুন।</p>`;
                 return;
             }
 
             listEl.innerHTML = files.map(f => {
                 const isZip = /\.zip$/i.test(f.fileName || '') || (f.mimeType || '').includes('zip');
                 const isPdf = /\.pdf$/i.test(f.fileName || '') || (f.mimeType || '').includes('pdf');
-                const iconClass = isZip ? 'fa-file-zipper text-amber-800' : (isPdf ? 'fa-file-pdf text-rose-700' : 'fa-file-shield text-teal-900');
+                const isVideo = /\.(mp4|webm|mov|mkv)$/i.test(f.fileName || '') || (f.mimeType || '').startsWith('video/');
+                const isImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(f.fileName || '') || (f.mimeType || '').startsWith('image/');
+                const canPreview = isVideo || isImage || isPdf;
+                const iconClass = isVideo ? 'fa-file-video text-indigo-800' : (isZip ? 'fa-file-zipper text-amber-800' : (isPdf ? 'fa-file-pdf text-rose-700' : 'fa-file-shield text-teal-900'));
 
                 return `
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border-2 border-slate-300 p-3.5 rounded-2xl">
@@ -2718,7 +2749,8 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 shrink-0">
+                        <div class="flex items-center gap-2 flex-wrap shrink-0">
+                            ${canPreview ? `<button type="button" onclick="previewVaultMedia('${escapeHTML(f.id)}')" class="bg-indigo-800 hover:bg-indigo-900 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer flex items-center gap-1"><i class="fas fa-play"></i> দেখুন / প্লে</button>` : ''}
                             <button type="button" onclick="downloadVaultFile('${escapeHTML(f.id)}')" class="bg-teal-900 hover:bg-teal-950 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer flex items-center gap-1">
                                 <i class="fas fa-download"></i> ডাউনলোড
                             </button>
@@ -3314,6 +3346,7 @@
 
         function displayBookingSlipFromRecord(record) {
             if (!record) return;
+            currentActiveSlipRecord = record;
             lastGeneratedToken = record.token;
             const requiredMobileDigitsBn = toBengaliNumber(record.mobileDigits || getConfiguredMobileDigits());
             const requiredDigitsBn = toBengaliNumber(record.aadhaarDigits || getConfiguredAadhaarDigits());
@@ -3429,12 +3462,19 @@
 
         function reDownloadMatchedSlip(token) {
             const rec = bookingRecords.find(b => b.token === token);
-            if (!rec) return;
+            if (!rec) {
+                showToast("⚠️ এই টোকেনের বুকিং তথ্য পাওয়া যায়নি।");
+                return;
+            }
             switchView('booking');
             displayBookingSlipFromRecord(rec);
             setTimeout(() => {
-                document.getElementById('booking-slip-card')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+                const slipEl = document.getElementById('booking-slip-card');
+                if (slipEl) {
+                    slipEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                downloadBookingSlipPDF();
+            }, 350);
         }
 
         async function submitPublicFeedback(e) {
@@ -3567,53 +3607,65 @@
         }
 
         function toggleThreeDotMenu(e) {
-            e.stopPropagation();
-            document.getElementById('three-dot-menu').classList.toggle('hidden');
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('three-dot-menu');
+            if (menu) menu.classList.toggle('hidden');
         }
 
         function closeThreeDotMenu() {
-            document.getElementById('three-dot-menu').classList.add('hidden');
+            const menu = document.getElementById('three-dot-menu');
+            if (menu) menu.classList.add('hidden');
         }
 
-        document.addEventListener('click', () => closeThreeDotMenu());
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('three-dot-menu');
+            const btn = document.getElementById('three-dot-btn');
+            if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && (!btn || !btn.contains(e.target))) {
+                menu.classList.add('hidden');
+            }
+        });
 
         function validateBookingDate() {
             const dateInput = document.getElementById('book-date');
-            const warn = document.getElementById('date-warning');
-            if (!dateInput.value) {
-                updateSlotAvailability();
-                return true;
-            }
+            const warningEl = document.getElementById('date-warning');
+            const submitBtn = document.getElementById('submit-booking-btn');
+            if (!dateInput) return false;
 
-            const val = dateInput.value;
-            const selected = new Date(val + 'T00:00:00');
-            const day = selected.getDay();
-
-            if (day === 0 || day === 6) {
-                warn.textContent = "শনিবার ও রবিবার অফিস বন্ধ থাকে। অনুগ্রহ করে অন্য কার্যদিবস বেছে নিন।";
-                warn.classList.remove('hidden');
-                dateInput.value = "";
-                updateSlotAvailability();
-                return false;
-            }
-            if (govtHolidays2026.includes(val)) {
-                warn.textContent = "নির্বাচিত তারিখটি সরকারি ছুটির দিন। অন্য তারিখ নির্বাচন করুন।";
-                warn.classList.remove('hidden');
-                dateInput.value = "";
-                updateSlotAvailability();
-                return false;
-            }
-            const customHolidays = portalConfig.customHolidays || [];
-            const matchedHoliday = customHolidays.find(h => h.date === val);
-            if (matchedHoliday) {
-                warn.textContent = `এই দিনটি বিশেষ কারণে বন্ধ ঘোষণা করা হয়েছে (${matchedHoliday.reason || 'অফিস বন্ধ'})। অন্য তারিখ নির্বাচন করুন।`;
-                warn.classList.remove('hidden');
-                dateInput.value = "";
+            const dateVal = dateInput.value;
+            if (!dateVal) {
+                if (warningEl) warningEl.classList.add('hidden');
                 updateSlotAvailability();
                 return false;
             }
 
-            warn.classList.add('hidden');
+            const selectedDate = new Date(dateVal + 'T00:00:00');
+            const dayOfWeek = selectedDate.getDay();
+            let holidayReason = "";
+
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                holidayReason = "শনি ও রবিবার অফিস বন্ধ থাকে। অনুগ্রহ করে অন্য কার্যদিবস নির্বাচন করুন।";
+            } else if (govtHolidays2026.includes(dateVal)) {
+                holidayReason = "এই তারিখে সরকারি ছুটি থাকায় অফিস বন্ধ থাকবে। অন্য তারিখ বেছে নিন।";
+            } else {
+                const customHol = (portalConfig.customHolidays || []).find(h => h.date === dateVal);
+                if (customHol) {
+                    holidayReason = `এই তারিখে অফিস বন্ধ থাকবে (${customHol.reason || 'বিশেষ ছুটি'})। অন্য তারিখ নির্বাচন করুন।`;
+                }
+            }
+
+            if (holidayReason) {
+                if (warningEl) {
+                    warningEl.textContent = "⚠️ " + holidayReason;
+                    warningEl.classList.remove('hidden');
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+                return false;
+            }
+
+            if (warningEl) warningEl.classList.add('hidden');
             updateSlotAvailability();
             return true;
         }
@@ -3621,35 +3673,26 @@
         function updateSlotAvailability() {
             const dateVal = document.getElementById('book-date')?.value || "";
             const slotSelect = document.getElementById('book-slot');
-            const badgeEl = document.getElementById('daily-remaining-badge');
+            const remBadge = document.getElementById('daily-remaining-badge');
             const submitBtn = document.getElementById('submit-booking-btn');
             if (!slotSelect) return;
 
             const limit = getEffectiveDailyLimit();
-            const limitBn = toBengaliNumber(limit);
-            const bookedForDate = dateVal
-                ? bookingRecords.filter(b => b.date === dateVal)
-                : [];
-            const bookedSlotsSet = new Set(bookedForDate.map(b => b.slot));
-            const remaining = dateVal ? Math.max(0, limit - bookedForDate.length) : limit;
-            const remainingBn = toBengaliNumber(remaining);
+            const bookingsForDate = dateVal ? bookingRecords.filter(b => b.date === dateVal) : [];
+            const takenSlots = new Set(bookingsForDate.map(b => b.slot));
+            const remaining = Math.max(0, limit - bookingsForDate.length);
 
-            if (badgeEl) {
-                if (dateVal) {
-                    badgeEl.textContent = remaining === 0 ? `সব স্লট বুক হয়ে গেছে (০ / ${limitBn})` : `খালি স্লট: ${remainingBn} / ${limitBn}টি`;
-                    badgeEl.className = remaining === 0
-                        ? "text-xs sm:text-sm font-bold text-rose-950 bg-rose-100 px-3 py-0.5 rounded-lg border border-rose-300"
-                        : "text-xs sm:text-sm font-bold text-teal-950 bg-teal-100 px-3 py-0.5 rounded-lg border border-teal-400";
-                } else {
-                    badgeEl.textContent = `প্রতিদিন সর্বোচ্চ ${limitBn} জন`;
-                }
+            if (remBadge) {
+                remBadge.textContent = dateVal
+                    ? `খালি স্লট: ${toBengaliNumber(remaining)} / ${toBengaliNumber(limit)} জন`
+                    : `প্রতিদিন সর্বোচ্চ ${toBengaliNumber(limit)} জন`;
             }
 
             Array.from(slotSelect.options).forEach(opt => {
                 const baseVal = opt.value;
-                const isBooked = bookedSlotsSet.has(baseVal);
-                opt.disabled = isBooked;
-                opt.textContent = isBooked ? `${baseVal} (বুক হয়ে গেছে)` : baseVal;
+                const isTaken = dateVal !== "" && takenSlots.has(baseVal);
+                opt.disabled = isTaken;
+                opt.textContent = isTaken ? `${baseVal} — [বুক হয়ে গেছে]` : baseVal;
             });
 
             if (slotSelect.options[slotSelect.selectedIndex]?.disabled) {
@@ -3715,114 +3758,55 @@
             const name = nameEl ? nameEl.value.trim() : "";
             const phone = phoneEl ? sanitizeDigitsOnly(phoneEl.value, requiredMobileDigits) : "";
             const address = addressEl ? addressEl.value.trim() : "";
-            const parentGuardianName = parentEl ? parentEl.value.trim() : "";
-            const service = document.getElementById('book-service').value;
-            const slot = document.getElementById('book-slot').value;
-            const serviceInfo = getServiceInfoByValue(service);
-            const serviceFee = serviceInfo.fee;
-
-            const isChild = isChildEnrollmentService(service);
-            const requiredDigits = getConfiguredAadhaarDigits();
-            const requiredDigitsBn = toBengaliNumber(requiredDigits);
-
-            const updateAadhaarEl = document.getElementById('book-aadhaar-12');
-            const childParentAadhaarEl = document.getElementById('book-child-parent-aadhaar');
-
-            const activeAadhaarRaw = isChild
-                ? sanitizeDigitsOnly(childParentAadhaarEl?.value || "", requiredDigits)
-                : sanitizeDigitsOnly(updateAadhaarEl?.value || "", requiredDigits);
-
-            const customFieldValues = [];
-            document.querySelectorAll('.dynamic-booking-input').forEach(inp => {
-                const fLabel = inp.getAttribute('data-field-label') || '';
-                const fVal = (inp.value || '').trim();
-                if (fLabel && fVal) {
-                    customFieldValues.push({ label: fLabel, value: fVal });
-                }
-            });
-
-            if (phoneEl && phone.length !== requiredMobileDigits) {
-                showBookingErrorNotice(`মোবাইল নম্বর অবশ্যই ঠিক ${requiredMobileDigitsBn} সংখ্যার হতে হবে।`);
-                return;
-            }
-
-            if (activeAadhaarRaw.length !== requiredDigits) {
-                if (isChild) {
-                    showBookingErrorNotice(`নতুন আধার কার্ড এনরোল করতে বাবা বা মায়ের ঠিক ${requiredDigitsBn} সংখ্যার আধার নম্বর বাধ্যতামূলক।`);
+        function drawWrappedCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = String(text || '').split(' ');
+            let line = '';
+            let curY = y;
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+                    ctx.fillText(line.trim(), x, curY);
+                    line = words[n] + ' ';
+                    curY += lineHeight;
                 } else {
-                    showBookingErrorNotice(`আপডেট (বায়োমেট্রিক আপডেট ও ডেমোগ্রাফিক আপডেট) সিলেক্ট করলে ঠিক ${requiredDigitsBn} সংখ্যার আধার নম্বর বাধ্যতামূলক।`);
-                }
-                return;
-            }
-
-            if (activeAadhaarRaw) {
-                const sameDaySameAadhaarCount = bookingRecords.filter(b => {
-                    if (b.date !== date) return false;
-                    const storedAadhaar = sanitizeDigitsOnly(b.aadhaarNumber || b.idFull12 || "", 12);
-                    return storedAadhaar && storedAadhaar === activeAadhaarRaw;
-                }).length;
-
-                if (sameDaySameAadhaarCount >= 2) {
-                    showBookingErrorNotice(`এই আধার নম্বর দিয়ে ${date} তারিখে ইতিমধ্যেই ২টি অ্যাপয়েন্টমেন্ট বুক করা হয়েছে! একটি আধার নম্বর দিয়ে একদিনে ২টির বেশি আধার অ্যাপয়েন্টমেন্ট বুক করা যাবে না।`);
-                    return;
+                    line = testLine;
                 }
             }
-
-            const isSlotTaken = bookingRecords.some(b => b.date === date && b.slot === slot);
-            if (isSlotTaken) {
-                showBookingErrorNotice("দুঃখিত! এই তারিখ ও সময় স্লটটি ইতিমধ্যেই বুক হয়ে গেছে। অনুগ্রহ করে অন্য সময় স্লট নির্বাচন করুন।");
-                updateSlotAvailability();
-                return;
+            if (line.trim()) {
+                ctx.fillText(line.trim(), x, curY);
+                curY += lineHeight;
             }
+            return curY;
+        }
 
-            const limit = getEffectiveDailyLimit();
-            const countForDate = bookingRecords.filter(b => b.date === date).length;
-            if (countForDate >= limit) {
-                showBookingErrorNotice(`দুঃখিত, এই তারিখে ইতিমধ্যেই ${toBengaliNumber(limit)} জনের বুকিং সম্পন্ন হয়ে গেছে! অন্য তারিখ বেছে নিন।`);
-                return;
+        function saveCanvasToA4PDF(canvas, filename) {
+            const jsPDFCtor = window.jspdf?.jsPDF || window.jsPDF;
+            if (!jsPDFCtor) return false;
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDFCtor('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 10;
+            let pdfWidth = pageWidth - margin * 2;
+            let pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            if (pdfHeight > pageHeight - margin * 2) {
+                const ratio = (pageHeight - margin * 2) / pdfHeight;
+                pdfHeight *= ratio;
+                pdfWidth *= ratio;
             }
-
-            const token = generateUniqueToken();
-            lastGeneratedToken = token;
-
-            const newBooking = {
-                token: token,
-                name: name,
-                parentGuardianName: parentGuardianName,
-                aadhaarNumber: activeAadhaarRaw,
-                aadhaarDigits: requiredDigits,
-                mobileDigits: requiredMobileDigits,
-                isChildEnrollment: isChild,
-                idLast4: activeAadhaarRaw.slice(-4),
-                idFull12: activeAadhaarRaw,
-                phone: phone,
-                address: address,
-                customFields: customFieldValues,
-                service: service,
-                fee: serviceFee,
-                date: date,
-                slot: slot,
-                status: "অপেক্ষমান (Pending)",
-                createdAt: Date.now()
-            };
-
-            bookingRecords.unshift(newBooking);
-            updateSlotAvailability();
-            await saveBookingToCloud(newBooking);
-
-            displayBookingSlipFromRecord(newBooking);
-            document.getElementById('booking-slip-card').scrollIntoView({ behavior: 'smooth' });
-            showToast("✅ বুকিং সফল ও ক্লাউডে অটো-সেভ হয়েছে!");
-
-            setTimeout(() => {
-                downloadBookingSlipPDF();
-            }, 600);
+            const xOffset = (pageWidth - pdfWidth) / 2;
+            pdf.addImage(imgData, 'PNG', xOffset, margin, pdfWidth, pdfHeight);
+            pdf.save(filename);
+            return true;
         }
 
         async function downloadBookingSlipPDF() {
             const element = document.getElementById('booking-slip-card');
             const btn = document.getElementById('download-pdf-btn');
-            if (!element) return;
+            if (!element || element.classList.contains('hidden')) {
+                showToast("⚠️ আগে বুকিং স্লিপ ওপেন করুন।");
+                return;
+            }
 
             if (btn) {
                 btn.disabled = true;
@@ -3830,28 +3814,153 @@
             }
 
             try {
-                if (typeof html2canvas !== 'undefined' && window.jspdf) {
-                    const canvas = await html2canvas(element, {
-                        scale: 2,
-                        useCORS: true,
-                        backgroundColor: '#ffffff',
-                        ignoreElements: (el) => el.hasAttribute('data-html2canvas-ignore')
+                const rec = currentActiveSlipRecord || {
+                    token: (document.getElementById('slip-token')?.textContent || '').replace(/^#/, ''),
+                    name: document.getElementById('slip-name')?.textContent || '',
+                    parentGuardianName: document.getElementById('slip-parent-guardian-name')?.textContent || '',
+                    aadhaarNumber: document.getElementById('slip-id-last4')?.textContent || '',
+                    phone: document.getElementById('slip-phone')?.textContent || '',
+                    address: document.getElementById('slip-address')?.textContent || '',
+                    service: document.getElementById('slip-service')?.textContent || '',
+                    date: (document.getElementById('slip-datetime')?.textContent || '').split('(')[0].trim(),
+                    slot: ((document.getElementById('slip-datetime')?.textContent || '').split('(')[1] || '').replace(')', '').trim(),
+                    fee: document.getElementById('slip-fee')?.textContent || ''
+                };
+
+                const W = 1240;
+                const H = 1754;
+                const canvas = document.createElement('canvas');
+                canvas.width = W;
+                canvas.height = H;
+                const ctx = canvas.getContext('2d');
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, W, H);
+
+                // Outer frame
+                ctx.strokeStyle = '#0f766e';
+                ctx.lineWidth = 6;
+                ctx.strokeRect(48, 48, W - 96, H - 96);
+
+                // Top Header Banner
+                ctx.fillStyle = '#0b2e2c';
+                ctx.fillRect(48, 48, W - 96, 190);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 34px "Noto Sans Bengali", Arial, sans-serif';
+                ctx.fillText(portalConfig.officeName || 'CDPO Office, Amarpur', 84, 118);
+
+                ctx.fillStyle = '#a7f3d0';
+                ctx.font = 'bold 24px "Noto Sans Bengali", Arial, sans-serif';
+                ctx.fillText('অফিসিয়াল অ্যাপয়েন্টমেন্ট কনফার্মেশন স্লিপ (Official Appointment Slip)', 84, 166);
+
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = '600 20px "Noto Sans Bengali", Arial, sans-serif';
+                ctx.fillText(portalConfig.officeAddress || 'Amarpur, Gomati District, Tripura', 84, 206);
+
+                // Token Box
+                ctx.fillStyle = '#f0fdfa';
+                ctx.fillRect(84, 270, 520, 145);
+                ctx.strokeStyle = '#0f766e';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(84, 270, 520, 145);
+
+                ctx.fillStyle = '#0f766e';
+                ctx.font = 'bold 22px "Noto Sans Bengali", Arial, sans-serif';
+                ctx.fillText('টোকেন নম্বর (TOKEN NUMBER)', 112, 318);
+
+                ctx.fillStyle = '#090d16';
+                ctx.font = 'bold 54px Arial, sans-serif';
+                ctx.fillText(`#${rec.token || lastGeneratedToken}`, 112, 385);
+
+                // QR Box on Right
+                const qrCanvas = element.querySelector('#slip-qr-container canvas');
+                const qrImgEl = element.querySelector('#slip-qr-container img');
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(920, 260, 236, 236);
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(920, 260, 236, 236);
+
+                if (qrCanvas) {
+                    ctx.drawImage(qrCanvas, 943, 275, 190, 190);
+                } else if (qrImgEl && qrImgEl.complete) {
+                    ctx.drawImage(qrImgEl, 943, 275, 190, 190);
+                }
+                ctx.fillStyle = '#0f766e';
+                ctx.font = 'bold 17px Arial, sans-serif';
+                ctx.fillText('VERIFICATION QR', 964, 486);
+
+                // Details Table
+                const requiredDigitsBn = toBengaliNumber(rec.aadhaarDigits || getConfiguredAadhaarDigits());
+                const formattedAadhaar = formatConfiguredAadhaarDisplay(rec.aadhaarNumber || rec.idFull12 || '', rec.aadhaarDigits || 12) || (rec.aadhaarNumber || '—');
+                const aadhaarTitle = rec.isChildEnrollment
+                    ? `বাবা বা মায়ের আধার নম্বর (${requiredDigitsBn} ডিজিট)`
+                    : `আধার নম্বর (${requiredDigitsBn} ডিজিট)`;
+
+                const rows = [
+                    ['আবেদনকারীর নাম (Applicant Name)', rec.name || '—'],
+                    ['পিতা/স্বামী/মাতার নাম (Guardian)', rec.parentGuardianName || '—'],
+                    [aadhaarTitle, formattedAadhaar],
+                    ['মোবাইল নম্বর (Mobile Number)', rec.phone || '—'],
+                    ['ঠিকানা (Address)', rec.address || '—'],
+                    ['সেবার ধরন (Service Type)', rec.service || '—'],
+                    ['নির্ধারিত তারিখ (Appointment Date)', rec.date || '—'],
+                    ['সময় স্লট (Time Slot)', rec.slot || '—'],
+                    ['নির্ধারিত চার্জ (অফিসে দেয়)', rec.fee || '—']
+                ];
+
+                if (Array.isArray(rec.customFields)) {
+                    rec.customFields.forEach(cf => {
+                        if (cf.label && cf.value) rows.push([cf.label, cf.value]);
                     });
+                }
 
-                    const imgData = canvas.toDataURL('image/png');
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
+                let curY = 530;
+                rows.forEach(([label, val], idx) => {
+                    ctx.fillStyle = idx % 2 === 0 ? '#f1f5f9' : '#ffffff';
+                    ctx.fillRect(84, curY, W - 168, 76);
+                    ctx.strokeStyle = '#cbd5e1';
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(84, curY, W - 168, 76);
 
-                    const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                    ctx.fillStyle = '#334155';
+                    ctx.font = 'bold 22px "Noto Sans Bengali", Arial, sans-serif';
+                    ctx.fillText(`${label}:`, 108, curY + 46);
 
-                    pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
-                    pdf.save(`CDPO_Amarpur_Slip_${lastGeneratedToken}.pdf`);
+                    ctx.fillStyle = '#090d16';
+                    ctx.font = 'bold 23px "Noto Sans Bengali", Arial, sans-serif';
+                    drawWrappedCanvasText(ctx, String(val), 520, curY + 46, W - 625, 30);
+
+                    curY += 76;
+                });
+
+                // Important Notice Box
+                curY += 28;
+                ctx.fillStyle = '#fffbeb';
+                ctx.fillRect(84, curY, W - 168, 225);
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(84, curY, W - 168, 225);
+
+                ctx.fillStyle = '#78350f';
+                ctx.font = 'bold 25px "Noto Sans Bengali", Arial, sans-serif';
+                ctx.fillText('জরুরি নির্দেশনা (Important Instructions):', 112, curY + 44);
+
+                ctx.fillStyle = '#090d16';
+                ctx.font = '600 21px "Noto Sans Bengali", Arial, sans-serif';
+                ctx.fillText('• স্লিপটি প্রিন্ট বা মোবাইলে সেভ করে মূল সরকারি ডকুমেন্টসহ নির্দিষ্ট সময়ে অফিসে উপস্থিত থাকুন।', 112, curY + 90);
+                ctx.fillText('• অনলাইন স্লট বুকিং সম্পূর্ণ বিনামূল্যে। শুধুমাত্র নির্ধারিত সরকারি চার্জ অফিসে জমা দেবেন।', 112, curY + 132);
+                ctx.fillText(`• হোয়াটসঅ্যাপ সাপোর্ট: ${portalConfig.phone || '7628852177'} (শুধুমাত্র মেসেজ করবেন, কল করবেন না)।`, 112, curY + 174);
+
+                const ok = saveCanvasToA4PDF(canvas, `CDPO_Amarpur_Slip_${rec.token || lastGeneratedToken || 'Slip'}.pdf`);
+                if (ok) {
                     showToast("✅ পিডিএফ স্লিপ সফলভাবে ডাউনলোড হয়েছে!");
                 } else {
                     printBookingSlip();
                 }
             } catch (err) {
+                console.error("PDF generation fallback triggered:", err);
                 printBookingSlip();
             } finally {
                 if (btn) {
@@ -4357,29 +4466,133 @@
 
         async function downloadChecklistPDF() {
             if (!isAdminAuthenticated) return;
-            const container = document.getElementById('admin-booking-list-container');
-            if (!container) return;
+            const filterDate = document.getElementById('admin-filter-date')?.value || "";
+            const rows = filterDate ? bookingRecords.filter(b => b.date === filterDate) : bookingRecords;
+            if (rows.length === 0) {
+                showToast("⚠️ পিডিএফ তৈরি করার জন্য তালিকায় কোনো বুকিং নেই।");
+                return;
+            }
             showToast("চেকলিস্ট PDF তৈরি হচ্ছে...");
             try {
-                if (typeof html2canvas !== 'undefined' && window.jspdf) {
-                    const canvas = await html2canvas(container, {
-                        scale: 2,
-                        backgroundColor: '#ffffff',
-                        ignoreElements: (el) => el.hasAttribute('data-html2canvas-ignore')
-                    });
-                    const imgData = canvas.toDataURL('image/png');
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('l', 'mm', 'a4');
-                    const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
-                    const filterDate = document.getElementById('admin-filter-date')?.value || "All_Dates";
-                    pdf.save(`CDPO_Amarpur_Checklist_${filterDate}.pdf`);
-                    showToast("✅ চেকলিস্ট PDF ডাউনলোড হয়েছে!");
+                const jsPDFCtor = window.jspdf?.jsPDF || window.jsPDF;
+                if (!jsPDFCtor) {
+                    printChecklistFallback();
+                    return;
                 }
+                const pdf = new jsPDFCtor('l', 'mm', 'a4');
+                const rowsPerPage = 14;
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                for (let page = 0; page < totalPages; page++) {
+                    const chunk = rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+                    const W = 1754;
+                    const H = 1240;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = W;
+                    canvas.height = H;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, W, H);
+
+                    ctx.fillStyle = '#0b2e2c';
+                    ctx.fillRect(40, 40, W - 80, 110);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 28px "Noto Sans Bengali", Arial, sans-serif';
+                    ctx.fillText(`${portalConfig.officeName} — বুকিং চেকলিস্ট`, 68, 92);
+                    ctx.fillStyle = '#a7f3d0';
+                    ctx.font = 'bold 20px "Noto Sans Bengali", Arial, sans-serif';
+                    ctx.fillText(`তারিখ: ${filterDate || 'সকল তারিখ'} • মোট বুকিং: ${toBengaliNumber(rows.length)} জন • পৃষ্ঠা ${toBengaliNumber(page + 1)}/${toBengaliNumber(totalPages)}`, 68, 128);
+
+                    const cols = [
+                        { title: 'টোকেন', x: 40, w: 145 },
+                        { title: 'আবেদনকারীর নাম', x: 185, w: 260 },
+                        { title: 'পিতা/স্বামী/মাতা', x: 445, w: 240 },
+                        { title: 'আধার নম্বর', x: 685, w: 225 },
+                        { title: 'মোবাইল', x: 910, w: 175 },
+                        { title: 'সেবার ধরন', x: 1085, w: 310 },
+                        { title: 'তারিখ ও স্লট', x: 1395, w: 200 },
+                        { title: 'স্ট্যাটাস', x: 1595, w: 119 }
+                    ];
+
+                    let y = 170;
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.fillRect(40, y, W - 80, 52);
+                    ctx.fillStyle = '#090d16';
+                    ctx.font = 'bold 19px "Noto Sans Bengali", Arial, sans-serif';
+                    cols.forEach(c => {
+                        ctx.strokeStyle = '#64748b';
+                        ctx.strokeRect(c.x, y, c.w, 52);
+                        ctx.fillText(c.title, c.x + 10, y + 33);
+                    });
+                    y += 52;
+
+                    chunk.forEach((b, idx) => {
+                        const rowH = 64;
+                        ctx.fillStyle = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
+                        ctx.fillRect(40, y, W - 80, rowH);
+                        const aadhaarDisp = formatConfiguredAadhaarDisplay(b.aadhaarNumber || b.idFull12 || '', b.aadhaarDigits || 12) || '—';
+                        const cells = [
+                            `#${b.token || ''}`,
+                            b.name || '—',
+                            b.parentGuardianName || '—',
+                            aadhaarDisp,
+                            b.phone || '—',
+                            (b.service || '').split('—')[0].trim(),
+                            `${b.date || ''} (${(b.slot || '').split('•')[0].trim()})`,
+                            (b.status || '').includes('সম্পন্ন') ? 'সম্পন্ন ✓' : 'অপেক্ষমান'
+                        ];
+                        ctx.fillStyle = '#090d16';
+                        ctx.font = '600 18px "Noto Sans Bengali", Arial, sans-serif';
+                        cols.forEach((c, ci) => {
+                            ctx.strokeStyle = '#94a3b8';
+                            ctx.strokeRect(c.x, y, c.w, rowH);
+                            const txt = String(cells[ci]).slice(0, 28);
+                            ctx.fillText(txt, c.x + 10, y + 38);
+                        });
+                        y += rowH;
+                    });
+
+                    if (page > 0) pdf.addPage();
+                    const imgData = canvas.toDataURL('image/png');
+                    pdf.addImage(imgData, 'PNG', 8, 8, pdf.internal.pageSize.getWidth() - 16, pdf.internal.pageSize.getHeight() - 16);
+                }
+
+                pdf.save(`CDPO_Amarpur_Checklist_${filterDate || 'All_Dates'}.pdf`);
+                showToast("✅ চেকলিস্ট PDF ডাউনলোড হয়েছে!");
             } catch (e) {
-                showToast("PDF তৈরি করতে সমস্যা হয়েছে।");
+                console.error("Checklist PDF fallback:", e);
+                printChecklistFallback();
             }
+        }
+
+        function printChecklistFallback() {
+            const tableHTML = document.getElementById('admin-booking-list-container')?.innerHTML || "";
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) {
+                showToast("⚠️ পপ-আপ ব্লক করা আছে, ব্রাউজার থেকে প্রিন্ট অনুমতি দিন।");
+                return;
+            }
+            win.document.write(`
+                <html>
+                <head>
+                    <title>বুকিং চেকলিস্ট - ${escapeHTML(portalConfig.officeName)}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; color: #090d16; }
+                        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                        th, td { border: 1px solid #94a3b8; padding: 6px 8px; text-align: left; }
+                        th { background: #e2e8f0; }
+                        [data-html2canvas-ignore] { display: none !important; }
+                    </style>
+                </head>
+                <body>
+                    <h2 style="margin:0 0 12px;">${escapeHTML(portalConfig.officeName)} — বুকিং চেকলিস্ট</h2>
+                    ${tableHTML}
+                    <script>window.onload = function() { window.print(); };<\/script>
+                </body>
+                </html>
+            `);
+            win.document.close();
         }
 
         function exportAllDataBackup() {
@@ -4656,6 +4869,8 @@
         window.addFileToVault = addFileToVault;
         window.downloadVaultFile = downloadVaultFile;
         window.deleteVaultFile = deleteVaultFile;
+        window.previewVaultMedia = previewVaultMedia;
+        window.closeVaultMediaPreview = closeVaultMediaPreview;
 
         window.scrollToSection = scrollToSection;
         window.searchApplicantSlip = searchApplicantSlip;
