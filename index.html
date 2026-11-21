@@ -305,7 +305,7 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" id="track-query-input" onkeydown="if(event.key==='Enter') searchApplicantSlip()" placeholder="টোকেন নম্বর (যেমন: AMP-101) অথবা মোবাইল নম্বর লিখুন..." class="flex-1 px-4 py-3 rounded-xl text-sm outline-none">
+                    <input type="text" id="track-query-input" oninput="if(this.value.trim().length>=3) searchApplicantSlip()" onkeydown="if(event.key==='Enter'){ event.preventDefault(); searchApplicantSlip(); }" placeholder="টোকেন নম্বর (যেমন: AMP-101) অথবা মোবাইল নম্বর লিখুন..." class="flex-1 px-4 py-3 rounded-xl text-sm outline-none">
                     <button type="button" onclick="searchApplicantSlip()" class="bg-teal-900 hover:bg-teal-950 text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer shrink-0 transition">
                         <i class="fas fa-search"></i> স্ট্যাটাস খুঁজুন
                     </button>
@@ -569,15 +569,15 @@
                     <p>• যোগাযোগ: <span id="slip-contact-phone" class="font-bold">7628852177</span> (শুধুমাত্র হোয়াটসঅ্যাপে মেসেজ করুন, কল করবেন না).</p>
                 </div>
 
-                <div id="slip-action-buttons" class="flex flex-wrap gap-3 no-print" data-html2canvas-ignore="true">
-                    <button type="button" id="download-pdf-btn" onclick="downloadBookingSlipPDF()" class="flex-1 min-w-[200px] bg-teal-900 hover:bg-teal-950 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition">
-                        <i class="fas fa-file-pdf"></i> <span>PDF ফাইল ডাউনলোড করুন</span>
+                <div id="slip-action-buttons" class="grid grid-cols-1 sm:grid-cols-3 gap-3 no-print" data-html2canvas-ignore="true">
+                    <button type="button" id="download-pdf-btn" onclick="downloadBookingSlipPDF()" class="bg-teal-900 hover:bg-teal-950 text-white font-extrabold py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition">
+                        <i class="fas fa-file-pdf text-base"></i> <span>PDF ফাইল ডাউনলোড করুন</span>
                     </button>
-                    <button type="button" onclick="printBookingSlip()" class="bg-slate-950 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer transition">
-                        <i class="fas fa-print"></i> <span>প্রিন্ট</span>
+                    <button type="button" id="send-wa-slip-btn" onclick="sendSlipToWhatsApp()" class="bg-green-700 hover:bg-green-800 text-white font-extrabold py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition">
+                        <i class="fab fa-whatsapp text-lg"></i> <span>হোয়াটসঅ্যাপে বুকিং তথ্য পাঠান</span>
                     </button>
-                    <button type="button" onclick="sendSlipToWhatsApp()" class="flex-1 min-w-[180px] bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer transition">
-                        <i class="fab fa-whatsapp"></i> <span>হোয়াটসঅ্যাপে পাঠান</span>
+                    <button type="button" onclick="printBookingSlip()" class="bg-slate-950 hover:bg-slate-800 text-white font-extrabold py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer transition">
+                        <i class="fas fa-print text-base"></i> <span>স্লিপ প্রিন্ট করুন</span>
                     </button>
                 </div>
             </div>
@@ -717,6 +717,15 @@
                     <button type="button" id="vault-upload-btn" onclick="addFileToVault()" class="w-full bg-teal-900 hover:bg-teal-950 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 cursor-pointer transition">
                         <i class="fas fa-lock"></i> ফাইলটি লকারের ভেতরে লক করে সেভ করুন
                     </button>
+                </div>
+
+                <!-- ভিডিও / ছবি / পিডিএফ প্রিভিউ প্লেয়ার বক্স -->
+                <div id="vault-media-preview-box" class="hidden bg-slate-900 border-2 border-teal-500 rounded-2xl p-4 space-y-3 text-white">
+                    <div class="flex items-center justify-between gap-2">
+                        <span id="vault-media-preview-title" class="text-sm font-bold truncate"></span>
+                        <button type="button" onclick="closeVaultMediaPreview()" class="bg-rose-700 hover:bg-rose-800 text-white px-3 py-1 rounded-lg text-xs font-bold cursor-pointer">বন্ধ করুন ✕</button>
+                    </div>
+                    <div id="vault-media-preview-content" class="flex justify-center"></div>
                 </div>
 
                 <!-- সংরক্ষিত ফাইলসমূহের তালিকা -->
@@ -3428,8 +3437,10 @@
             const matches = bookingRecords.filter(b => {
                 const bToken = (b.token || '').toLowerCase();
                 const bPhone = (b.phone || '').replace(/[^0-9]/g, '');
+                const bName = (b.name || '').toLowerCase();
                 return (bToken && (bToken === cleanToken || bToken.includes(cleanToken))) ||
-                       (cleanDigits.length >= 6 && bPhone.includes(cleanDigits));
+                       (cleanDigits.length >= 4 && bPhone.includes(cleanDigits)) ||
+                       (cleanToken.length >= 3 && bName.includes(cleanToken));
             });
 
             if (matches.length === 0) {
@@ -3446,18 +3457,48 @@
                     <div class="space-y-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="font-extrabold text-teal-950 text-base">#${escapeHTML(m.token)}</span>
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${m.status.includes('সম্পন্ন') ? 'bg-emerald-100 text-emerald-950 border border-emerald-400' : 'bg-amber-100 text-amber-950 border border-amber-400'}">
-                                ${escapeHTML(m.status)}
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${(m.status || '').includes('সম্পন্ন') ? 'bg-emerald-100 text-emerald-950 border border-emerald-400' : 'bg-amber-100 text-amber-950 border border-amber-400'}">
+                                ${escapeHTML(m.status || 'অপেক্ষমান (Pending)')}
                             </span>
                         </div>
                         <p class="text-sm font-bold text-slate-950">নাম: ${escapeHTML(m.name || '—')} • মোবাইল: ${escapeHTML(m.phone || '—')}</p>
                         <p class="text-xs sm:text-sm font-semibold text-slate-800">সেবা: ${escapeHTML(m.service)} • তারিখ: <strong>${escapeHTML(m.date)}</strong> (${escapeHTML(m.slot)})</p>
                     </div>
-                    <button type="button" onclick="reDownloadMatchedSlip('${escapeHTML(m.token)}')" class="bg-teal-900 hover:bg-teal-950 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
-                        <i class="fas fa-file-pdf"></i> স্লিপ ও QR দেখুন / PDF
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" onclick="directDownloadSlipByToken('${escapeHTML(m.token)}')" class="bg-teal-900 hover:bg-teal-950 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="fas fa-file-pdf"></i> ফ্রি PDF ডাউনলোড
+                        </button>
+                        <button type="button" onclick="sendMatchedSlipToWhatsApp('${escapeHTML(m.token)}')" class="bg-green-700 hover:bg-green-800 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="fab fa-whatsapp"></i> হোয়াটসঅ্যাপে পাঠান
+                        </button>
+                        <button type="button" onclick="reDownloadMatchedSlip('${escapeHTML(m.token)}')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fas fa-qrcode"></i> স্লিপ দেখুন
                     </button>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
+        }
+
+        function directDownloadSlipByToken(token) {
+            const rec = bookingRecords.find(b => b.token === token);
+            if (!rec) {
+                showToast("⚠️ এই টোকেনের বুকিং তথ্য পাওয়া যায়নি।");
+                return;
+            }
+            displayBookingSlipFromRecord(rec);
+            setTimeout(() => {
+                downloadBookingSlipPDF(rec);
+            }, 150);
+        }
+
+        function sendMatchedSlipToWhatsApp(token) {
+            const rec = bookingRecords.find(b => b.token === token);
+            if (!rec) {
+                showToast("⚠️ এই টোকেনের বুকিং তথ্য পাওয়া যায়নি।");
+                return;
+            }
+            displayBookingSlipFromRecord(rec);
+            sendSlipToWhatsApp();
         }
 
         function reDownloadMatchedSlip(token) {
@@ -3473,8 +3514,7 @@
                 if (slipEl) {
                     slipEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-                downloadBookingSlipPDF();
-            }, 350);
+            }, 180);
         }
 
         async function submitPublicFeedback(e) {
@@ -3748,8 +3788,12 @@
 
             const requiredMobileDigits = getConfiguredMobileDigits();
             const requiredMobileDigitsBn = toBengaliNumber(requiredMobileDigits);
+            const requiredAadhaarDigits = getConfiguredAadhaarDigits();
+            const requiredAadhaarDigitsBn = toBengaliNumber(requiredAadhaarDigits);
 
-            const date = document.getElementById('book-date').value;
+            const date = document.getElementById('book-date')?.value || "";
+            const slot = document.getElementById('book-slot')?.value || "";
+            const service = document.getElementById('book-service')?.value || "";
             const nameEl = document.getElementById('book-name');
             const phoneEl = document.getElementById('book-phone');
             const addressEl = document.getElementById('book-address');
@@ -3758,6 +3802,121 @@
             const name = nameEl ? nameEl.value.trim() : "";
             const phone = phoneEl ? sanitizeDigitsOnly(phoneEl.value, requiredMobileDigits) : "";
             const address = addressEl ? addressEl.value.trim() : "";
+            const parentGuardianName = parentEl ? parentEl.value.trim() : "";
+
+            if (phoneEl && phone.length !== requiredMobileDigits) {
+                showBookingErrorNotice(`অনুগ্রহ করে সঠিক ${requiredMobileDigitsBn} ডিজিটের মোবাইল নম্বর লিখুন।`);
+                phoneEl.focus();
+                return;
+            }
+
+            const isChild = isChildEnrollmentService(service);
+            const aadhaarInputEl = isChild
+                ? document.getElementById('book-child-parent-aadhaar')
+                : document.getElementById('book-aadhaar-12');
+            const rawAadhaarDigits = sanitizeDigitsOnly(aadhaarInputEl?.value || "", requiredAadhaarDigits);
+
+            if (rawAadhaarDigits.length !== requiredAadhaarDigits) {
+                const whoLabel = isChild ? "বাবা বা মায়ের" : "আবেদনকারীর";
+                showBookingErrorNotice(`অনুগ্রহ করে ${whoLabel} সঠিক ${requiredAadhaarDigitsBn} ডিজিটের আধার নম্বর লিখুন।`);
+                aadhaarInputEl?.focus();
+                return;
+            }
+
+            const limit = getEffectiveDailyLimit();
+            const bookingsForDate = bookingRecords.filter(b => b.date === date);
+            if (bookingsForDate.length >= limit) {
+                showBookingErrorNotice(`দুঃখিত! ${date} তারিখে দৈনিক সর্বোচ্চ ${toBengaliNumber(limit)} জন বুকিং সম্পন্ন হয়ে গেছে। অনুগ্রহ করে অন্য তারিখ নির্বাচন করুন।`);
+                return;
+            }
+
+            if (bookingsForDate.some(b => b.slot === slot)) {
+                showBookingErrorNotice("দুঃখিত! এই সময় স্লটটি ইতিমধ্যেই বুক হয়ে গেছে। অনুগ্রহ করে অন্য স্লট নির্বাচন করুন।");
+                updateSlotAvailability();
+                return;
+            }
+
+            const sameAadhaarCount = bookingsForDate.filter(b => {
+                const existingDigits = sanitizeDigitsOnly(b.aadhaarNumber || b.idFull12 || "", requiredAadhaarDigits);
+                return existingDigits && existingDigits === rawAadhaarDigits;
+            }).length;
+
+            if (sameAadhaarCount >= 2) {
+                showBookingErrorNotice(`একই আধার নম্বর (${formatConfiguredAadhaarDisplay(rawAadhaarDigits, requiredAadhaarDigits)}) দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।`);
+                return;
+            }
+
+            const customFields = [];
+            document.querySelectorAll('.dynamic-booking-input').forEach(inp => {
+                const lbl = inp.getAttribute('data-field-label') || '';
+                const val = (inp.value || '').trim();
+                if (lbl && val) {
+                    customFields.push({ label: lbl, value: val });
+                }
+            });
+
+            const submitBtn = document.getElementById('submit-booking-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>স্লিপ তৈরি হচ্ছে...</span>`;
+            }
+
+            try {
+                const token = generateUniqueToken();
+                const serviceInfo = getServiceInfoByValue(service);
+                const newBooking = {
+                    token,
+                    name,
+                    parentGuardianName,
+                    aadhaarNumber: rawAadhaarDigits,
+                    idFull12: rawAadhaarDigits,
+                    idLast4: rawAadhaarDigits.slice(-4),
+                    aadhaarDigits: requiredAadhaarDigits,
+                    mobileDigits: requiredMobileDigits,
+                    isChildEnrollment: isChild,
+                    phone,
+                    address,
+                    service,
+                    fee: serviceInfo.fee || "",
+                    date,
+                    slot,
+                    status: "অপেক্ষমান (Pending)",
+                    customFields,
+                    createdAt: Date.now()
+                };
+
+                bookingRecords.unshift(newBooking);
+                await saveBookingToCloud(newBooking);
+
+                updateSlotAvailability();
+                if (isAdminAuthenticated) renderBookingList();
+
+                displayBookingSlipFromRecord(newBooking);
+
+                const formEl = document.getElementById('booking-form');
+                if (formEl) {
+                    formEl.reset();
+                    setupDateConstraints();
+                    syncAadhaarInputsWithService();
+                    updateBookingDocPreview();
+                    updateSlotAvailability();
+                }
+
+                showToast(`✅ বুকিং সফল! টোকেন নম্বর: #${token} — নিচে PDF ডাউনলোড ও হোয়াটসঅ্যাপ বাটন প্রস্তুত।`);
+                const slipCard = document.getElementById('booking-slip-card');
+                if (slipCard) {
+                    setTimeout(() => {
+                        slipCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 120);
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fas fa-file-pdf"></i> <span id="submit-booking-btn-text">${escapeHTML((portalI18n[currentPortalLang] || portalI18n.bn).submitBookingBtn)}</span>`;
+                }
+            }
+        }
+
         function drawWrappedCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
             const words = String(text || '').split(' ');
             let line = '';
@@ -3780,9 +3939,9 @@
         }
 
         function saveCanvasToA4PDF(canvas, filename) {
-            const jsPDFCtor = window.jspdf?.jsPDF || window.jsPDF;
+            const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
             if (!jsPDFCtor) return false;
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpeg', 0.96);
             const pdf = new jsPDFCtor('p', 'mm', 'a4');
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
@@ -3795,15 +3954,43 @@
                 pdfWidth *= ratio;
             }
             const xOffset = (pageWidth - pdfWidth) / 2;
-            pdf.addImage(imgData, 'PNG', xOffset, margin, pdfWidth, pdfHeight);
-            pdf.save(filename);
+            pdf.addImage(imgData, 'JPEG', xOffset, margin, pdfWidth, pdfHeight);
+            try {
+                const pdfBlob = pdf.output('blob');
+                const blobUrl = URL.createObjectURL(pdfBlob);
+                const link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = blobUrl;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(blobUrl);
+                }, 5000);
+            } catch (e) {
+                pdf.save(filename);
+            }
             return true;
         }
 
-        async function downloadBookingSlipPDF() {
+        async function downloadBookingSlipPDF(explicitRecord = null) {
             const element = document.getElementById('booking-slip-card');
             const btn = document.getElementById('download-pdf-btn');
-            if (!element || element.classList.contains('hidden')) {
+            const rec = explicitRecord || currentActiveSlipRecord || {
+                token: (document.getElementById('slip-token')?.textContent || '').replace(/^#/, ''),
+                name: document.getElementById('slip-name')?.textContent || '',
+                parentGuardianName: document.getElementById('slip-parent-guardian-name')?.textContent || '',
+                aadhaarNumber: document.getElementById('slip-id-last4')?.textContent || '',
+                phone: document.getElementById('slip-phone')?.textContent || '',
+                address: document.getElementById('slip-address')?.textContent || '',
+                service: document.getElementById('slip-service')?.textContent || '',
+                date: (document.getElementById('slip-datetime')?.textContent || '').split('(')[0].trim(),
+                slot: ((document.getElementById('slip-datetime')?.textContent || '').split('(')[1] || '').replace(')', '').trim(),
+                fee: document.getElementById('slip-fee')?.textContent || ''
+            };
+
+            if (!rec || !rec.token) {
                 showToast("⚠️ আগে বুকিং স্লিপ ওপেন করুন।");
                 return;
             }
@@ -3814,19 +4001,6 @@
             }
 
             try {
-                const rec = currentActiveSlipRecord || {
-                    token: (document.getElementById('slip-token')?.textContent || '').replace(/^#/, ''),
-                    name: document.getElementById('slip-name')?.textContent || '',
-                    parentGuardianName: document.getElementById('slip-parent-guardian-name')?.textContent || '',
-                    aadhaarNumber: document.getElementById('slip-id-last4')?.textContent || '',
-                    phone: document.getElementById('slip-phone')?.textContent || '',
-                    address: document.getElementById('slip-address')?.textContent || '',
-                    service: document.getElementById('slip-service')?.textContent || '',
-                    date: (document.getElementById('slip-datetime')?.textContent || '').split('(')[0].trim(),
-                    slot: ((document.getElementById('slip-datetime')?.textContent || '').split('(')[1] || '').replace(')', '').trim(),
-                    fee: document.getElementById('slip-fee')?.textContent || ''
-                };
-
                 const W = 1240;
                 const H = 1754;
                 const canvas = document.createElement('canvas');
@@ -3874,8 +4048,8 @@
                 ctx.fillText(`#${rec.token || lastGeneratedToken}`, 112, 385);
 
                 // QR Box on Right
-                const qrCanvas = element.querySelector('#slip-qr-container canvas');
-                const qrImgEl = element.querySelector('#slip-qr-container img');
+                const qrCanvas = element ? element.querySelector('#slip-qr-container canvas') : null;
+                const qrImgEl = element ? element.querySelector('#slip-qr-container img') : null;
                 ctx.fillStyle = '#f8fafc';
                 ctx.fillRect(920, 260, 236, 236);
                 ctx.strokeStyle = '#94a3b8';
@@ -3884,7 +4058,7 @@
 
                 if (qrCanvas) {
                     ctx.drawImage(qrCanvas, 943, 275, 190, 190);
-                } else if (qrImgEl && qrImgEl.complete) {
+                } else if (qrImgEl && qrImgEl.complete && qrImgEl.naturalWidth > 0) {
                     ctx.drawImage(qrImgEl, 943, 275, 190, 190);
                 }
                 ctx.fillStyle = '#0f766e';
@@ -3965,7 +4139,7 @@
             } finally {
                 if (btn) {
                     btn.disabled = false;
-                    btn.innerHTML = `<i class="fas fa-file-pdf"></i> <span>PDF ফাইল ডাউনলোড করুন</span>`;
+                    btn.innerHTML = `<i class="fas fa-file-pdf text-base"></i> <span>PDF ফাইল ডাউনলোড করুন</span>`;
                 }
             }
         }
@@ -4030,8 +4204,25 @@
         }
 
         function sendSlipToWhatsApp() {
-            if (!lastSlipText) return;
-            const url = `https://wa.me/91${encodeURIComponent(portalConfig.phone)}?text=${encodeURIComponent(lastSlipText)}`;
+            const rec = currentActiveSlipRecord;
+            let textToSend = lastSlipText;
+            if (!textToSend && rec) {
+                textToSend = [
+                    `*${portalConfig.officeName}*`,
+                    `টোকেন নম্বর: #${rec.token}`,
+                    `নাম: ${rec.name || ''}`,
+                    `মোবাইল নম্বর: ${rec.phone || ''}`,
+                    `সেবা: ${rec.service || ''}`,
+                    `তারিখ ও সময়: ${rec.date || ''} (${rec.slot || ''})`
+                ].join('\n');
+            }
+            if (!textToSend) {
+                showToast("⚠️ আগে বুকিং স্লিপ ওপেন করুন।");
+                return;
+            }
+            const cleanOfficePhone = String(portalConfig.phone || '7628852177').replace(/[^0-9]/g, '');
+            const waNumber = cleanOfficePhone.length === 10 ? `91${cleanOfficePhone}` : cleanOfficePhone;
+            const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(textToSend)}`;
             window.open(url, '_blank');
         }
 
@@ -4558,7 +4749,20 @@
                     pdf.addImage(imgData, 'PNG', 8, 8, pdf.internal.pageSize.getWidth() - 16, pdf.internal.pageSize.getHeight() - 16);
                 }
 
-                pdf.save(`CDPO_Amarpur_Checklist_${filterDate || 'All_Dates'}.pdf`);
+                const checklistFilename = `CDPO_Amarpur_Checklist_${filterDate || 'All_Dates'}.pdf`;
+                try {
+                    const pdfBlob = pdf.output('blob');
+                    const blobUrl = URL.createObjectURL(pdfBlob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = checklistFilename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
+                } catch (saveErr) {
+                    pdf.save(checklistFilename);
+                }
                 showToast("✅ চেকলিস্ট PDF ডাউনলোড হয়েছে!");
             } catch (e) {
                 console.error("Checklist PDF fallback:", e);
@@ -4874,6 +5078,8 @@
 
         window.scrollToSection = scrollToSection;
         window.searchApplicantSlip = searchApplicantSlip;
+        window.directDownloadSlipByToken = directDownloadSlipByToken;
+        window.sendMatchedSlipToWhatsApp = sendMatchedSlipToWhatsApp;
         window.reDownloadMatchedSlip = reDownloadMatchedSlip;
         window.submitPublicFeedback = submitPublicFeedback;
         window.deleteFeedbackRecord = deleteFeedbackRecord;
