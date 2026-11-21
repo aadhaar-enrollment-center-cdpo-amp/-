@@ -502,7 +502,7 @@
                             <span id="daily-remaining-badge" class="text-xs sm:text-sm font-bold text-teal-950 bg-teal-100 px-3 py-0.5 rounded-lg border border-teal-400">প্রতিদিন সর্বোচ্চ ২০ জন</span>
                         </div>
                         <select id="book-slot" required class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-teal-800 outline-none text-sm bg-white text-slate-950"></select>
-                        <p id="slot-availability-hint" class="text-xs sm:text-sm text-slate-90 font-semibold mt-1.5">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।</p>
+                        <p id="slot-availability-hint" class="text-xs sm:text-sm text-slate-900 font-semibold mt-1.5">• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০ পর্যন্ত সময়ের মধ্যে স্বয়ংক্রিয়ভাবে স্লট টাইম তৈরি হয় এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।</p>
                     </div>
 
                     <div id="booking-footer-info-box" class="hidden bg-[#fffbeb] border-2 border-amber-400 rounded-2xl p-4 text-sm text-slate-950 whitespace-pre-line leading-relaxed font-semibold"></div>
@@ -911,6 +911,46 @@
                         </div>
                     </div>
 
+                    <!-- বুকিং ডেটের ১ দিন আগে অটোমেটিক হোয়াটসঅ্যাপ এলার্ট সিস্টেম -->
+                    <div id="tomorrow-whatsapp-alert-box" class="bg-emerald-50 border-2 border-emerald-500 p-4 rounded-2xl space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                            <div class="space-y-0.5">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bg-green-700 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                                        <i class="fab fa-whatsapp"></i> ১ দিন আগের অটো এলার্ট সিস্টেম
+                                    </span>
+                                    <span id="tomorrow-alert-date-label" class="text-xs font-extrabold text-emerald-950"></span>
+                                </div>
+                                <h4 class="text-sm sm:text-base font-bold text-slate-950">আগামীকালের বুকিং আবেদনকারীদের হোয়াটসঅ্যাপ এলার্ট পাঠান</h4>
+                                <p id="tomorrow-alert-summary-text" class="text-xs sm:text-sm text-slate-800 font-semibold">আগামীকালের অ্যাপয়েন্টমেন্ট যাদের আছে, তাদের তালিকা স্বয়ংক্রিয়ভাবে ফিল্টার হয়ে প্রস্তুত রয়েছে।</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                <button type="button" onclick="filterTomorrowBookings()" class="bg-white hover:bg-emerald-100 text-emerald-950 border border-emerald-500 font-bold px-3 py-2 rounded-xl text-xs cursor-pointer">
+                                    আগামীকালের তালিকা দেখুন (<span id="tomorrow-alert-count">০</span>)
+                                </button>
+                                <button type="button" id="send-next-tomorrow-alert-btn" onclick="sendNextTomorrowWhatsAppAlert()" class="bg-green-700 hover:bg-green-800 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer shadow-xs">
+                                    <i class="fab fa-whatsapp text-base"></i> <span id="send-next-alert-btn-label">পরবর্তী এলার্ট পাঠান</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <details class="bg-white border border-emerald-300 rounded-xl p-3">
+                            <summary class="text-xs font-bold text-teal-950 cursor-pointer flex items-center justify-between">
+                                <span><i class="fas fa-pen-to-square mr-1"></i> হোয়াটসঅ্যাপ এলার্ট মেসেজ টেমপ্লেট কাস্টমাইজ করুন (ঐচ্ছিক)</span>
+                                <span class="text-slate-600">ক্লিক করুন</span>
+                            </summary>
+                            <div class="mt-2.5 space-y-2">
+                                <textarea id="whatsapp-alert-template-input" rows="3" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm outline-none"></textarea>
+                                <div class="flex items-center justify-between gap-2 flex-wrap">
+                                    <span class="text-xs text-slate-700 font-semibold">কোড: <code>{name}</code>, <code>{token}</code>, <code>{service}</code>, <code>{date}</code>, <code>{slot}</code>, <code>{office}</code></span>
+                                    <button type="button" onclick="saveWhatsAppAlertTemplate()" class="bg-teal-900 hover:bg-teal-950 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs cursor-pointer">টেমপ্লেট সেভ করুন</button>
+                                </div>
+                            </div>
+                        </details>
+
+                        <div id="tomorrow-alert-queue-chips" class="flex flex-wrap gap-1.5"></div>
+                    </div>
+
                     <div class="flex flex-col sm:flex-row gap-2">
                         <input type="text" id="booking-search-input" oninput="renderBookingList()" placeholder="টোকেন নম্বর, নাম, পিতা/স্বামী/মাতার নাম, আধার নম্বর, মোবাইল নম্বর, ঠিকানা বা অতিরিক্ত তথ্য দিয়ে খুঁজুন..." class="flex-1 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm outline-none">
                     </div>
@@ -1169,7 +1209,7 @@
 
                         <div>
                             <label class="block text-xs sm:text-sm font-bold text-slate-950 mb-1">জরুরি নোট বা নির্দেশিকা (Note)</label>
-                            <textarea id="admin-edit-doc-note" rows="2" class="w-full px-3.5 py-2 rounded-xl text-sm outline-none bg-white"></textarea>
+                            <textarea id="admin-edit-doc-note" rows="2" class="w-full px-3.5 py-2.5 rounded-xl text-sm outline-none bg-white"></textarea>
                         </div>
 
                         <button type="button" onclick="saveDocCategoryEdits()" class="w-full bg-teal-900 hover:bg-teal-950 text-white font-bold py-3 rounded-xl text-sm cursor-pointer shadow-2xs">
@@ -1635,6 +1675,12 @@
             return `${year}-${month}-${day}`;
         }
 
+        function getTomorrowYYYYMMDD() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return getLocalYYYYMMDD(tomorrow);
+        }
+
         function cleanOldBookings(records) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -1751,6 +1797,7 @@
             bookingFooterInfo: "",
             isBookingPaused: false,
             bookingPauseReason: "জরুরি সরকারি কাজ / সার্ভার রক্ষণাবেক্ষণের জন্য সাময়িকভাবে অনলাইন বুকিং বন্ধ রাখা হয়েছে।",
+            whatsappAlertTemplate: "নমস্কার {name},\n*{office}*-এ আগামীকাল ({date}) আপনার অ্যাপয়েন্টমেন্ট রয়েছে।\n• টোকেন নম্বর: #{token}\n• সেবা: {service}\n• নির্ধারিত সময়: {slot}\nঅনুগ্রহ করে মূল ডকুমেন্ট ও বুকিং স্লিপসহ সঠিক সময়ে উপস্থিত থাকবেন।",
             slotRuleNote: "• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে স্লট সংখ্যা অনুযায়ী স্বয়ংক্রিয়ভাবে সময় তৈরি হয় এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।",
             pin: "31121999",
             securityQuestion: "তোমার প্রিয় মানুষটার নাম কি?",
@@ -1809,6 +1856,128 @@
             const parsed = parseInt(portalConfig.mobileDigitLength, 10);
             if (!Number.isFinite(parsed) || parsed < 6 || parsed > 15) return 10;
             return parsed;
+        }
+
+        function renderPortal() {
+            const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setTxt('nav-office-name', portalConfig.officeName);
+            setTxt('hero-office-title', portalConfig.officeName);
+            setTxt('slip-office-name', portalConfig.officeName);
+            setTxt('footer-office-name', portalConfig.officeName);
+
+            setTxt('hero-office-address', portalConfig.officeAddress);
+            setTxt('hero-phone-display', portalConfig.phone);
+            setTxt('slip-contact-phone', portalConfig.phone);
+            setTxt('footer-phone', portalConfig.phone);
+
+            const marqueeEl = document.getElementById('marquee-text');
+            if (marqueeEl && portalConfig.marqueeText) {
+                marqueeEl.textContent = portalConfig.marqueeText;
+            }
+
+            const waHref = `https://wa.me/91${encodeURIComponent(String(portalConfig.phone || '').replace(/[^0-9]/g, ''))}`;
+            const menuWa = document.getElementById('menu-wa-link');
+            if (menuWa) menuWa.href = waHref;
+
+            const menuMap = document.getElementById('menu-map-link');
+            if (menuMap && portalConfig.mapLink) menuMap.href = sanitizeURL(portalConfig.mapLink);
+
+            const limit = getEffectiveDailyLimit();
+            const limitBn = toBengaliNumber(limit);
+            const headerBadge = document.getElementById('booking-header-limit-badge');
+            if (headerBadge) {
+                headerBadge.textContent = `অনলাইন স্লট বুকিং (আগামী ১৬ দিন ও দৈনিক ${limitBn} জন লিমিট)`;
+            }
+
+            const bookingIntroEl = document.getElementById('booking-intro-text');
+            if (bookingIntroEl) {
+                bookingIntroEl.textContent = portalConfig.bookingIntroText || defaultPortalConfig.bookingIntroText;
+            }
+
+            const extraBox = document.getElementById('booking-extra-info-box');
+            if (extraBox) {
+                const extraTxt = (portalConfig.bookingExtraInfo || '').trim();
+                extraBox.textContent = extraTxt;
+                extraBox.classList.toggle('hidden', !extraTxt);
+            }
+
+            const footerBox = document.getElementById('booking-footer-info-box');
+            if (footerBox) {
+                const footerTxt = (portalConfig.bookingFooterInfo || '').trim();
+                footerBox.textContent = footerTxt;
+                footerBox.classList.toggle('hidden', !footerTxt);
+            }
+
+            const slotRuleEl = document.getElementById('slot-availability-hint');
+            if (slotRuleEl) {
+                slotRuleEl.textContent = portalConfig.slotRuleNote || defaultPortalConfig.slotRuleNote;
+            }
+
+            const pauseBanner = document.getElementById('emergency-pause-public-banner');
+            const pauseReasonEl = document.getElementById('emergency-pause-public-reason');
+            const bookingFormEl = document.getElementById('booking-form');
+            if (pauseBanner && pauseReasonEl && bookingFormEl) {
+                if (portalConfig.isBookingPaused) {
+                    pauseBanner.classList.remove('hidden');
+                    pauseReasonEl.textContent = portalConfig.bookingPauseReason || defaultPortalConfig.bookingPauseReason;
+                    bookingFormEl.classList.add('opacity-50', 'pointer-events-none');
+                } else {
+                    pauseBanner.classList.add('hidden');
+                    bookingFormEl.classList.remove('opacity-50', 'pointer-events-none');
+                }
+            }
+
+            const linksContainer = document.getElementById('custom-links-container');
+            if (linksContainer) {
+                const links = Array.isArray(portalConfig.links) ? portalConfig.links : [];
+                linksContainer.innerHTML = links.map(l => `
+                    <a href="${sanitizeURL(l.url)}" target="_blank" rel="noopener noreferrer" class="bg-slate-100 hover:bg-teal-50 border-2 border-slate-300 hover:border-teal-600 p-4 rounded-2xl flex items-center gap-3.5 transition group">
+                        <div class="w-11 h-11 rounded-xl bg-teal-900 text-white flex items-center justify-center text-base shrink-0 group-hover:scale-105 transition">
+                            <i class="${escapeHTML(l.icon || 'fas fa-link')}"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-950 text-sm sm:text-base truncate">${escapeHTML(l.title)}</div>
+                            <div class="text-xs text-teal-900 font-bold flex items-center gap-1 mt-0.5">
+                                <span>ওপেন করুন</span> <i class="fas fa-arrow-up-right-from-square text-[11px]"></i>
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            }
+
+            const customSecContainer = document.getElementById('dynamic-custom-options-container');
+            if (customSecContainer) {
+                const sections = Array.isArray(portalConfig.customSections) ? portalConfig.customSections : [];
+                customSecContainer.innerHTML = sections.map(sec => `
+                    <div class="bg-white border-2 border-slate-300 p-6 rounded-3xl shadow-xs space-y-2">
+                        <h4 class="text-lg font-bold text-slate-950 flex items-center gap-2">
+                            <i class="fas fa-circle-info text-teal-900"></i> ${escapeHTML(sec.title)}
+                        </h4>
+                        <p class="text-sm text-slate-900 font-semibold whitespace-pre-line leading-relaxed">${escapeHTML(sec.desc)}</p>
+                    </div>
+                `).join('');
+            }
+
+            const docsData = portalConfig.uidaiDocsData || defaultUidaiDocsData;
+            Object.keys(defaultUidaiDocsData).forEach(catKey => {
+                const badgeEl = document.getElementById(`badge-fee-${catKey}`);
+                const item = docsData[catKey] || defaultUidaiDocsData[catKey];
+                if (badgeEl && item && item.fee) {
+                    const shortMatch = String(item.fee).match(/₹[০-৯0-9]+/);
+                    if (item.fee.includes('বিনামূল্যে')) {
+                        badgeEl.textContent = 'বিনামূল্যে (₹০)';
+                    } else if (shortMatch) {
+                        badgeEl.textContent = shortMatch[0];
+                    }
+                }
+            });
+
+            renderStandardBookingFields();
+            renderDynamicBookingFields();
+            rebuildSlotOptions();
+            syncAadhaarInputsWithService();
+            renderNoticeSlide();
+            startNoticeAutoSlide();
         }
 
         function isYouth5To18Service(serviceVal) {
@@ -2992,128 +3161,118 @@
             `;
         }
 
-        function renderPortal() {
-            document.getElementById('nav-office-name').textContent = portalConfig.officeName;
-            document.getElementById('hero-office-title').textContent = portalConfig.officeName;
-            document.getElementById('hero-office-address').textContent = portalConfig.officeAddress;
-            document.getElementById('hero-phone-display').textContent = portalConfig.phone;
-            document.getElementById('marquee-text').textContent = portalConfig.marqueeText;
-            document.getElementById('slip-office-name').textContent = portalConfig.officeName;
-            document.getElementById('slip-contact-phone').textContent = portalConfig.phone;
-            document.getElementById('footer-office-name').textContent = portalConfig.officeName;
-            document.getElementById('footer-phone').textContent = portalConfig.phone;
-            document.getElementById('menu-wa-link').href = `https://wa.me/91${encodeURIComponent(portalConfig.phone)}`;
-            document.getElementById('menu-map-link').href = sanitizeURL(portalConfig.mapLink || "https://share.google/HYZVlJ4fjMObGnTpb");
-            document.getElementById('display-sec-question').textContent = portalConfig.securityQuestion || "তোমার প্রিয় মানুষটার নাম কি?";
+        function buildWhatsAppAlertText(b) {
+            const tpl = (portalConfig.whatsappAlertTemplate || defaultPortalConfig.whatsappAlertTemplate).trim();
+            return tpl
+                .replace(/\{name\}/g, b.name || 'আবেদনকারী')
+                .replace(/\{token\}/g, b.token || '')
+                .replace(/\{service\}/g, b.service || '')
+                .replace(/\{date\}/g, b.date || '')
+                .replace(/\{slot\}/g, b.slot || '')
+                .replace(/\{office\}/g, portalConfig.officeName || '');
+        }
 
-            const limit = getEffectiveDailyLimit();
-            const limitBn = toBengaliNumber(limit);
-            const mobileDigitsBn = toBengaliNumber(getConfiguredMobileDigits());
-            const slipPhoneLbl = document.getElementById('slip-phone-label-text');
-            if (slipPhoneLbl) slipPhoneLbl.textContent = `মোবাইল নম্বর (${mobileDigitsBn} ডিজিট):`;
+        async function sendWhatsAppReminder(token) {
+            const b = bookingRecords.find(item => item.token === token);
+            if (!b || !b.phone) {
+                showToast("⚠️ আবেদনকারীর মোবাইল নম্বর পাওয়া যায়নি।");
+                return;
+            }
+            const cleanPhone = String(b.phone).replace(/[^0-9]/g, '');
+            const fullPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+            const reminderMsg = buildWhatsAppAlertText(b);
 
-            const headerBadge = document.getElementById('booking-header-limit-badge');
-            if (headerBadge) {
-                headerBadge.textContent = `অনলাইন স্লট বুকিং (আগামী ১৬ দিন • দৈনিক ${limitBn} স্লট • ১০:৩০–০৪:৩০)`;
+            window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(reminderMsg)}`, '_blank');
+
+            b.alertSent = true;
+            b.alertSentAt = Date.now();
+            await saveBookingToCloud(b);
+            if (isAdminAuthenticated) renderBookingList();
+            showToast(`✅ #${b.token} (${b.name || ''})-এর জন্য হোয়াটসঅ্যাপ এলার্ট ওপেন ও মার্ক করা হয়েছে!`);
+        }
+
+        function filterTomorrowBookings() {
+            const tomorrowStr = getTomorrowYYYYMMDD();
+            const dateFilterEl = document.getElementById('admin-filter-date');
+            if (dateFilterEl) dateFilterEl.value = tomorrowStr;
+            renderBookingList();
+        }
+
+        async function sendNextTomorrowWhatsAppAlert() {
+            const tomorrowStr = getTomorrowYYYYMMDD();
+            const tomorrowList = bookingRecords.filter(b => b.date === tomorrowStr && b.phone);
+            if (tomorrowList.length === 0) {
+                showToast("⚠️ আগামীকালের কোনো বুকিং পাওয়া যায়নি।");
+                return;
             }
-            const slotLabel = document.getElementById('slot-select-label');
-            if (slotLabel) {
-                slotLabel.textContent = `সময় স্লট নির্বাচন করুন (মোট ${limitBn}টি স্লট • সকাল ১০:৩০ - বিকাল ০৪:৩০) *`;
+            const nextUnsent = tomorrowList.find(b => !b.alertSent);
+            if (!nextUnsent) {
+                showToast("🎉 আগামীকালের সব আবেদনকারীকে ইতিমধ্যেই হোয়াটসঅ্যাপ এলার্ট পাঠানো হয়েছে!");
+                return;
             }
-            const introEl = document.getElementById('booking-intro-text');
-            if (introEl) {
-                introEl.textContent = portalConfig.bookingIntroText || defaultPortalConfig.bookingIntroText;
-            }
-            const extraBox = document.getElementById('booking-extra-info-box');
-            if (extraBox) {
-                const extraVal = (portalConfig.bookingExtraInfo || "").trim();
-                extraBox.textContent = extraVal;
-                extraBox.classList.toggle('hidden', !extraVal);
-            }
-            const footerInfoBox = document.getElementById('booking-footer-info-box');
-            if (footerInfoBox) {
-                const footerVal = (portalConfig.bookingFooterInfo || "").trim();
-                footerInfoBox.textContent = footerVal;
-                footerInfoBox.classList.toggle('hidden', !footerVal);
-            }
-            const pauseBanner = document.getElementById('emergency-pause-public-banner');
-            const pauseReasonEl = document.getElementById('emergency-pause-public-reason');
-            const bookingFormEl = document.getElementById('booking-form');
-            if (pauseBanner && bookingFormEl) {
-                const isPaused = Boolean(portalConfig.isBookingPaused);
-                pauseBanner.classList.toggle('hidden', !isPaused);
-                bookingFormEl.classList.toggle('hidden', isPaused);
-                if (pauseReasonEl) {
-                    pauseReasonEl.textContent = portalConfig.bookingPauseReason || defaultPortalConfig.bookingPauseReason;
-                }
-            }
-            const ruleNoteEl = document.getElementById('slot-availability-hint');
-            if (ruleNoteEl) {
-                ruleNoteEl.textContent = portalConfig.slotRuleNote || `• সকাল ১০:৩০ থেকে বিকাল ০৪:৩০-এর মধ্যে ${limitBn}টি স্লট স্বয়ংক্রিয়ভাবে তৈরি হয়েছে এবং একই আধার নম্বর দিয়ে একদিনে ২টির বেশি বুকিং করা যাবে না।`;
+            await sendWhatsAppReminder(nextUnsent.token);
+        }
+
+        async function saveWhatsAppAlertTemplate() {
+            if (!isAdminAuthenticated) return;
+            const val = (document.getElementById('whatsapp-alert-template-input')?.value || '').trim();
+            portalConfig.whatsappAlertTemplate = val || defaultPortalConfig.whatsappAlertTemplate;
+            await persistConfig();
+            showToast("✅ হোয়াটসঅ্যাপ এলার্ট মেসেজ টেমপ্লেট সেভ হয়েছে!");
+        }
+
+        function updateTomorrowAlertPanel() {
+            const tomorrowStr = getTomorrowYYYYMMDD();
+            const tomorrowBookings = bookingRecords.filter(b => b.date === tomorrowStr);
+            const unsentList = tomorrowBookings.filter(b => !b.alertSent);
+            const sentCount = tomorrowBookings.length - unsentList.length;
+
+            const dateLbl = document.getElementById('tomorrow-alert-date-label');
+            const countEl = document.getElementById('tomorrow-alert-count');
+            const summaryEl = document.getElementById('tomorrow-alert-summary-text');
+            const nextBtn = document.getElementById('send-next-tomorrow-alert-btn');
+            const nextBtnLabel = document.getElementById('send-next-alert-btn-label');
+            const chipsBox = document.getElementById('tomorrow-alert-queue-chips');
+            const tplInput = document.getElementById('whatsapp-alert-template-input');
+
+            if (dateLbl) dateLbl.textContent = `আগামীকালের তারিখ: ${tomorrowStr}`;
+            if (countEl) countEl.textContent = toBengaliNumber(tomorrowBookings.length);
+            if (tplInput && document.activeElement !== tplInput) {
+                tplInput.value = portalConfig.whatsappAlertTemplate || defaultPortalConfig.whatsappAlertTemplate;
             }
 
-            rebuildSlotOptions();
-            renderStandardBookingFields();
-            renderDynamicBookingFields();
-            renderAdminCustomFieldsManager();
-            renderAdminStandardFieldsManager();
-            updateVaultBadge();
-
-            const docsData = portalConfig.uidaiDocsData || defaultUidaiDocsData;
-            ['name', 'dob', 'address', 'biometric', 'mobile', 'email', 'child', 'youth5to18'].forEach(k => {
-                const badgeEl = document.getElementById(`badge-fee-${k}`);
-                const dItem = docsData[k] || defaultUidaiDocsData[k];
-                if (badgeEl && dItem) {
-                    badgeEl.textContent = dItem.fee.split(' ')[0] || "₹৭৫";
-                }
-            });
-
-            const serviceSelect = document.getElementById('book-service');
-            if (serviceSelect) {
-                const currentVal = serviceSelect.value;
-                const mergedDocsList = [
-                    ...Object.values(docsData),
-                    ...(defaultUidaiDocsData.youth5to18 && !Object.values(docsData).some(d => d && d.title === defaultUidaiDocsData.youth5to18.title)
-                        ? [defaultUidaiDocsData.youth5to18]
-                        : [])
-                ].filter(Boolean);
-
-                serviceSelect.innerHTML = mergedDocsList.map(d => `
-                    <option value="${escapeHTML(d.title)}">${escapeHTML(d.title)}</option>
-                `).join('');
-                if (currentVal && Array.from(serviceSelect.options).some(o => o.value === currentVal)) {
-                    serviceSelect.value = currentVal;
+            if (summaryEl) {
+                if (tomorrowBookings.length === 0) {
+                    summaryEl.textContent = `আগামীকাল (${tomorrowStr}) কোনো অ্যাপয়েন্টমেন্ট বুকিং নেই।`;
+                } else {
+                    summaryEl.textContent = `আগামীকাল মোট ${toBengaliNumber(tomorrowBookings.length)} জনের বুকিং আছে • এলার্ট পাঠানো হয়েছে: ${toBengaliNumber(sentCount)} জন • বাকি: ${toBengaliNumber(unsentList.length)} জন।`;
                 }
             }
 
-            syncAadhaarInputsWithService();
+            if (nextBtn && nextBtnLabel) {
+                if (tomorrowBookings.length === 0) {
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextBtnLabel.textContent = "আগামীকাল বুকিং নেই";
+                } else if (unsentList.length === 0) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextBtnLabel.textContent = "সবাইকে এলার্ট পাঠানো সম্পন্ন ✓";
+                } else {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    const nextPerson = unsentList[0];
+                    nextBtnLabel.textContent = `এলার্ট পাঠান: #${nextPerson.token} (${nextPerson.name || 'আবেদনকারী'})`;
+                }
+            }
 
-            renderNoticeSlide();
-            startNoticeAutoSlide();
-
-            const container = document.getElementById('custom-links-container');
-            container.innerHTML = (portalConfig.links || []).map(link => `
-                <a href="${sanitizeURL(link.url)}" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-4 rounded-2xl border border-slate-300 bg-slate-100 hover:bg-teal-50 hover:border-teal-500 transition">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-xl bg-white text-teal-900 border border-slate-300 flex items-center justify-center shrink-0 group-hover:bg-teal-900 group-hover:text-white transition">
-                            <i class="${escapeHTML(link.icon || 'fas fa-link')}"></i>
-                        </div>
-                        <span class="font-bold text-slate-950 text-sm sm:text-base truncate">${escapeHTML(link.title)}</span>
-                    </div>
-                    <i class="fas fa-arrow-up-right-from-square text-xs text-slate-800 group-hover:text-teal-900"></i>
-                </a>
-            `).join('');
-
-            const customContainer = document.getElementById('dynamic-custom-options-container');
-            if (customContainer) {
-                const sections = portalConfig.customSections || [];
-                customContainer.innerHTML = sections.map(sec => `
-                    <div class="bg-[#ffffff] border-2 border-slate-300 p-6 sm:p-8 rounded-3xl shadow-xs space-y-3">
-                        <h3 class="text-lg sm:text-xl font-bold text-slate-950 border-b border-slate-200 pb-3 flex items-center gap-2">
-                            <i class="fas fa-bookmark text-teal-900 text-base"></i> ${escapeHTML(sec.title)}
-                        </h3>
-                        <p class="text-sm text-slate-950 font-semibold leading-relaxed whitespace-pre-line">${escapeHTML(sec.desc)}</p>
-                    </div>
+            if (chipsBox) {
+                chipsBox.innerHTML = tomorrowBookings.map(b => `
+                    <button type="button" onclick="sendWhatsAppReminder('${escapeHTML(b.token)}')" class="px-2.5 py-1 rounded-xl text-xs font-bold border flex items-center gap-1.5 cursor-pointer transition ${b.alertSent ? 'bg-emerald-100 text-emerald-950 border-emerald-400' : 'bg-white hover:bg-green-50 text-slate-950 border-slate-300'}">
+                        <i class="fab fa-whatsapp ${b.alertSent ? 'text-emerald-800' : 'text-green-700'}"></i>
+                        <span>#${escapeHTML(b.token)} ${escapeHTML(b.name || '')}</span>
+                        <span class="px-1.5 py-0.2 rounded bg-slate-100 text-[11px]">${b.alertSent ? 'Sent ✓' : 'Send'}</span>
+                    </button>
                 `).join('');
             }
         }
@@ -3363,18 +3522,6 @@
             }
             renderAdminFeedbacksList();
             showToast("বার্তাটি মুছে ফেলা হয়েছে।");
-        }
-
-        function sendWhatsAppReminder(token) {
-            const b = bookingRecords.find(item => item.token === token);
-            if (!b || !b.phone) {
-                showToast("⚠️ আবেদনকারীর মোবাইল নম্বর পাওয়া যায়নি।");
-                return;
-            }
-            const cleanPhone = String(b.phone).replace(/[^0-9]/g, '');
-            const fullPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
-            const reminderMsg = `নমস্কার ${b.name || 'আবেদনকারী'},\n*${portalConfig.officeName}*-এ আপনার অ্যাপয়েন্টমেন্ট রিমাইন্ডার:\n• টোকেন নম্বর: #${b.token}\n• সেবা: ${b.service}\n• তারিখ ও সময়: ${b.date} (${b.slot})\nঅনুগ্রহ করে মূল ডকুমেন্ট ও স্লিপসহ নির্ধারিত সময়ে উপস্থিত থাকবেন।`;
-            window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(reminderMsg)}`, '_blank');
         }
 
         function exportBookingsToExcelCSV() {
@@ -4056,6 +4203,7 @@
             badge.textContent = bookingRecords.length;
             const fbBadge = document.getElementById('feedback-count-badge');
             if (fbBadge) fbBadge.textContent = feedbackRecords.length;
+            updateTomorrowAlertPanel();
 
             // লাইভ ড্যাশবোর্ড চার্ট আপডেট
             const todayStr = getLocalYYYYMMDD();
@@ -4162,10 +4310,11 @@
                             <span class="px-2.5 py-1 rounded-full text-xs font-bold ${b.status.includes('সম্পন্ন') ? 'bg-emerald-100 text-emerald-950 border border-emerald-400' : 'bg-amber-100 text-amber-950 border border-amber-400'}">
                                 ${escapeHTML(b.status)}
                             </span>
+                            ${b.alertSent ? `<span class="ml-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-950 border border-green-400">WA Alert ✓</span>` : ''}
                         </td>
                         <td class="p-3 text-right whitespace-nowrap space-x-1" data-html2canvas-ignore="true">
-                            <button type="button" onclick="sendWhatsAppReminder('${escapeHTML(b.token)}')" title="WhatsApp রিমাইন্ডার পাঠান" class="bg-green-700 hover:bg-green-800 text-white px-2.5 py-1 rounded-lg font-bold transition cursor-pointer text-xs">
-                                <i class="fab fa-whatsapp"></i> রিমাইন্ডার
+                            <button type="button" onclick="sendWhatsAppReminder('${escapeHTML(b.token)}')" title="WhatsApp রিমাইন্ডার পাঠান" class="${b.alertSent ? 'bg-emerald-900 hover:bg-emerald-950' : 'bg-green-700 hover:bg-green-800'} text-white px-2.5 py-1 rounded-lg font-bold transition cursor-pointer text-xs">
+                                <i class="fab fa-whatsapp"></i> ${b.alertSent ? 'আবার পাঠান' : 'এলার্ট পাঠান'}
                             </button>
                             <button type="button" onclick="toggleBookingStatus('${escapeHTML(b.token)}')" class="bg-emerald-800 hover:bg-emerald-900 text-white px-2.5 py-1 rounded-lg font-bold transition cursor-pointer text-xs">
                                 ${b.status.includes('সম্পন্ন') ? 'অপেক্ষমান' : 'সম্পন্ন'}
@@ -4514,6 +4663,9 @@
         window.submitPublicFeedback = submitPublicFeedback;
         window.deleteFeedbackRecord = deleteFeedbackRecord;
         window.sendWhatsAppReminder = sendWhatsAppReminder;
+        window.filterTomorrowBookings = filterTomorrowBookings;
+        window.sendNextTomorrowWhatsAppAlert = sendNextTomorrowWhatsAppAlert;
+        window.saveWhatsAppAlertTemplate = saveWhatsAppAlertTemplate;
         window.exportBookingsToExcelCSV = exportBookingsToExcelCSV;
 
         loadLocalCache();
